@@ -95,8 +95,7 @@ class Stanje:
 	# dovoljene poteze (vsi mozni premiki robotov z upostevanjem razlicnih moznih nalaganj)
 	# ce gre robot na polje tipa skladisce ali trg le opravi nalaganje ali odlaganje in ostane na istem mestu
 
-stanje = Stanje([[Polje("garaza",None),Polje("pot",None),Polje("pot",None)],[Polje("pot",None),Polje("ovira"),Polje("pot",None)],[Polje("trg",{"moka":3,"voda":2,"jajca":4}),Polje("ovira"),Polje("skladisce",{"moka":1,"voda":1})]],[Robot(2,(0,0),("",0))])
-print(stanje)
+# stanje1 = Stanje([[Polje("garaza",None),Polje("pot",None),Polje("pot",None)],[Polje("pot",None),Polje("ovira"),Polje("pot",None)],[Polje("trg",{"moka":3,"voda":2,"jajca":4}),Polje("ovira"),Polje("skladisce",{"moka":1,"voda":1})]],[Robot(2,(0,0),("",0))])
 
 def uvozi_stanje(filename):
 	plosca = []
@@ -122,10 +121,6 @@ def uvozi_stanje(filename):
 			roboti.append(Robot(int(robot[0]),(int(robot[1]),int(robot[2])),(robot[3],int(robot[4]))))
 	return Stanje(plosca,roboti)
 			
-
-stanje = uvozi_stanje("testni_primeri/test1.aa")
-print(stanje)
-
 # uvoz iz tekstovne datoteke oblike:
 '''
 pomenljiv naslov stanja
