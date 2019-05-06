@@ -75,7 +75,7 @@ class Robot:
 class Stanje:
 	# definicija zacetnega stanja
 	# na poljih se ne rabimo podatka o zasedenosti z roboti
-	def __init__(self, polja, roboti):
+	def __init__(self, polja=[[]], roboti=[]):
 		self.polja = polja
 		self.roboti = roboti
 		for robot in roboti:
@@ -95,32 +95,38 @@ class Stanje:
 	# dovoljene poteze (vsi mozni premiki robotov z upostevanjem razlicnih moznih nalaganj)
 	# ce gre robot na polje tipa skladisce ali trg le opravi nalaganje ali odlaganje in ostane na istem mestu
 
+	def uvozi_stanje(self, filename):
+		plosca = []
+		roboti = []
+		with open(filename,"r") as f:
+			print(f.readline())
+			f.readline()
+			while True:
+				polja = [polje.split(" ") for polje in f.readline()[:-1].split(",")]
+				if len(polja[0][0]) == 0:
+					break
+				vrstica = []
+				for polje in polja:
+					if len(polje) == 1:
+						vrstica.append(Polje(polje[0]))
+					else:
+						vrstica.append(Polje(polje[0],{blago:int(kolicina) for blago,kolicina in [x.split(".") for x in polje[1:]]}))
+				plosca.append(vrstica)
+			while True:
+				robot = f.readline()[:-1].split(",")
+				if len(robot[0]) == 0:
+					break
+				roboti.append(Robot(int(robot[0]),(int(robot[1]),int(robot[2])),(robot[3],int(robot[4]))))
+		self.polja = plosca
+		self.roboti = roboti
+		for robot in roboti:
+			if self.polja[robot.polozaj[0]][robot.polozaj[1]].tip in ['garaza', 'pot']:
+				self.polja[robot.polozaj[0]][robot.polozaj[1]].atributi = robot
+			else:
+				print('Robot {} ne more biti postavljen na izbrano polje'.format(robot))
+
 # stanje1 = Stanje([[Polje("garaza",None),Polje("pot",None),Polje("pot",None)],[Polje("pot",None),Polje("ovira"),Polje("pot",None)],[Polje("trg",{"moka":3,"voda":2,"jajca":4}),Polje("ovira"),Polje("skladisce",{"moka":1,"voda":1})]],[Robot(2,(0,0),("",0))])
 
-def uvozi_stanje(filename):
-	plosca = []
-	roboti = []
-	with open(filename,"r") as f:
-		print(f.readline())
-		f.readline()
-		while True:
-			polja = [polje.split(" ") for polje in f.readline()[:-1].split(",")]
-			if len(polja[0][0]) == 0:
-				break
-			vrstica = []
-			for polje in polja:
-				if len(polje) == 1:
-					vrstica.append(Polje(polje[0]))
-				else:
-					vrstica.append(Polje(polje[0],{blago:int(kolicina) for blago,kolicina in [x.split(".") for x in polje[1:]]}))
-			plosca.append(vrstica)
-		while True:
-			robot = f.readline()[:-1].split(",")
-			if len(robot[0]) == 0:
-				break
-			roboti.append(Robot(int(robot[0]),(int(robot[1]),int(robot[2])),(robot[3],int(robot[4]))))
-	return Stanje(plosca,roboti)
-			
 # uvoz iz tekstovne datoteke oblike:
 '''
 pomenljiv naslov stanja
