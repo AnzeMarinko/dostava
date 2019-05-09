@@ -94,6 +94,7 @@ class Stanje:
 	# preveri, ce je konec (vsi trgi brez povprasevanj in roboti v garazah)
 	# dovoljene poteze (vsi mozni premiki robotov z upostevanjem razlicnih moznih nalaganj)
 	# ce gre robot na polje tipa skladisce ali trg le opravi nalaganje ali odlaganje in ostane na istem mestu
+	# ukaz, premakni robota, ki mi spremeni polozaj in to spremeni tudi na poljih
 
 	def uvozi_stanje(self, filename):
 		plosca = []
