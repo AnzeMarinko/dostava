@@ -27,7 +27,8 @@ class Polje:
 			raise Exception("{} ne vsebuje atributa tipa dict.".format(tip))
 		elif tip not in ['garaza', 'pot', 'skladisce', 'trg', 'ovira']:
 			raise Exception("Polja tipa {} ne obstajajo.".format(tip))
-
+	
+	# objekt pretvori v niz
 	def __repr__(self):
 		if self.tip in "garaza":
 			return "Garaza ({})".format(self.atributi)
@@ -83,6 +84,7 @@ class Robot:
 	def nalozi(self, skladisce_1, blago, kolicina):
 		self.blago = skladisce_1.prevzemi(blago, min([kolicina, self.prostor]))
 	
+	# premakne robota in vrne (star polozaj, nov polozaj)
 	def premakni(self, dx, dy):
 		stari = self.polozaj
 		self.polozaj = (self.polozaj[0]+dx,self.polozaj[1]+dy)
@@ -97,6 +99,7 @@ class Stanje:
 		self.m = len(polja)
 		self.n = len(polja[0])
 		self.roboti = roboti
+		# na polja postavi robote
 		for robot in roboti:
 			if self.polja[robot.polozaj[0]][robot.polozaj[1]].tip in ['garaza', 'pot']:
 				self.polja[robot.polozaj[0]][robot.polozaj[1]].atributi = robot
@@ -109,7 +112,9 @@ class Stanje:
 			opis += str(vrstica) + "\n"
 		return opis
 	
+	# robota iz seznama self.roboti z indeksom irobot premakni za dx desno in dy dol
 	def premakni(self, irobot, dx, dy):
+		# preveri ce ta robot obstaja
 		if irobot < 0 or irobot >= len(self.roboti):
 			print("Nepravilen indeks robota.")
 			return None
@@ -119,10 +124,13 @@ class Stanje:
 			print("Nepravilen premik.")
 			return None
 		premik = self.roboti[irobot].premakni(dx,dy)
+		# poleg spremembe polozaja robota popravi tudi lastnosti polj
 		self.polja[premik[0][1]][premik[0][0]].atributi = None
 		self.polja[premik[1][1]][premik[1][0]].atributi = self.roboti[irobot]
 	
+	# robotu iz seznama self.roboti z indeksom irobot nalozi podano kolicino blaga iz skladisca dx desno in dy dol od robota
 	def nalaganje(self, irobot, dx, dy, blago, kolicina):
+		# preveri ce robot obstaja
 		if irobot < 0 or irobot >= len(self.roboti):
 			print("Nepravilen indeks robota.")
 			return None
@@ -131,12 +139,15 @@ class Stanje:
 		if dx + x < 0 or dx + x >= self.m or dy + y < 0 or dy + y >= self.n or self.polja[dy+y][dx+x].tip != 'skladisce' or abs(dx)+abs(dy)!=1:
 			print("Nepravilno skladisce.")
 			return None
-		if self.polja[dy+y][dx+x].atributi.get(blago,0) == 0:
+		# ali je to blago sploh v skladiscu
+		if self.polja[dy+y][dx+x].atributi.get(blago,0) <= 0:
 			print("Nedosegljivo blago.")
 			return None
 		self.roboti[irobot].nalozi(self.polja[y+dy][x+dx], blago, kolicina)
 	
+	# robot iz seznama self.roboti z indeksom irobot odlozi blago na trg dx desno in dy dol od robota
 	def odlaganje(self, irobot, dx, dy):
+		# preveri ce robot obstaja
 		if irobot < 0 or irobot >= len(self.roboti):
 			print("Nepravilen indeks robota.")
 			return None
@@ -146,7 +157,8 @@ class Stanje:
 			print("Nepravilen trg.")
 			return None
 		self.roboti[irobot].odlozi(self.polja[y+dy][x+dx])
-
+	
+	# uvoz stanja iz datoteke (za obliko datoteke glej spodaj)
 	def uvozi_stanje(self, filename):
 		plosca = []
 		roboti = []
