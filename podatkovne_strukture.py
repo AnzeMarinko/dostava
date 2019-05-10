@@ -1,4 +1,16 @@
 # definicije objektov polje (tipa garaza, pot, skladisce, trg, ovira), robot in stanje
+
+
+
+
+# =============================================:
+# TODO:
+	# preveri, ce je konec (vsi trgi brez povprasevanj in roboti v garazah)
+	# seznam dovoljenih potez (vsi mozni premiki robotov z upostevanjem razlicnih moznih nalaganj)
+
+
+
+
 # razred Polje ima tip in atribute, ki povedo, nekaj lastnosti o polju odvisno od tipa
 class Polje:
 	def __init__(self, tip, atributi=None):
@@ -70,6 +82,11 @@ class Robot:
 	# nalozi neko kolicino blaga iz skladisca
 	def nalozi(self, skladisce_1, blago, kolicina):
 		self.blago = skladisce_1.prevzemi(blago, min([kolicina, self.prostor]))
+	
+	def premakni(self, dx, dy):
+		stari = self.polozaj
+		self.polozaj = (self.polozaj[0]+dx,self.polozaj[1]+dy)
+		return stari, self.polozaj
 
 # stanje vsebuje tabelo polj in seznam robotov
 class Stanje:
@@ -77,6 +94,8 @@ class Stanje:
 	# na poljih se ne rabimo podatka o zasedenosti z roboti
 	def __init__(self, polja=[[]], roboti=[]):
 		self.polja = polja
+		self.m = len(polja)
+		self.n = len(polja[0])
 		self.roboti = roboti
 		for robot in roboti:
 			if self.polja[robot.polozaj[0]][robot.polozaj[1]].tip in ['garaza', 'pot']:
@@ -89,12 +108,44 @@ class Stanje:
 		for vrstica in self.polja:
 			opis += str(vrstica) + "\n"
 		return opis
-
-	# TODO:
-	# preveri, ce je konec (vsi trgi brez povprasevanj in roboti v garazah)
-	# dovoljene poteze (vsi mozni premiki robotov z upostevanjem razlicnih moznih nalaganj)
-	# ce gre robot na polje tipa skladisce ali trg le opravi nalaganje ali odlaganje in ostane na istem mestu
-	# ukaz, premakni robota, ki mi spremeni polozaj in to spremeni tudi na poljih
+	
+	def premakni(self, irobot, dx, dy):
+		if irobot < 0 or irobot >= len(self.roboti):
+			print("Nepravilen indeks robota.")
+			return None
+		(x,y)=self.roboti[irobot].polozaj
+		# premik mora biti dovoljen (dolzine 1, na polje garaza ali pot, znotraj plosce)
+		if dx + x < 0 or dx + x >= self.m or dy + y < 0 or dy + y >= self.n or self.polja[dy+y][dx+x].tip not in ['garaza','pot'] or abs(dx)+abs(dy)!=1:
+			print("Nepravilen premik.")
+			return None
+		premik = self.roboti[irobot].premakni(dx,dy)
+		self.polja[premik[0][1]][premik[0][0]].atributi = None
+		self.polja[premik[1][1]][premik[1][0]].atributi = self.roboti[irobot]
+	
+	def nalaganje(self, irobot, dx, dy, blago, kolicina):
+		if irobot < 0 or irobot >= len(self.roboti):
+			print("Nepravilen indeks robota.")
+			return None
+		(x,y)=self.roboti[irobot].polozaj
+		# nalaganje mora biti dovoljeno (na razdalji 1, na polje skladisce, znotraj plosce)
+		if dx + x < 0 or dx + x >= self.m or dy + y < 0 or dy + y >= self.n or self.polja[dy+y][dx+x].tip != 'skladisce' or abs(dx)+abs(dy)!=1:
+			print("Nepravilno skladisce.")
+			return None
+		if self.polja[dy+y][dx+x].atributi.get(blago,0) == 0:
+			print("Nedosegljivo blago.")
+			return None
+		self.roboti[irobot].nalozi(self.polja[y+dy][x+dx], blago, kolicina)
+	
+	def odlaganje(self, irobot, dx, dy):
+		if irobot < 0 or irobot >= len(self.roboti):
+			print("Nepravilen indeks robota.")
+			return None
+		(x,y)=self.roboti[irobot].polozaj
+		# nalaganje mora biti dovoljeno (na razdalji 1, na polje skladisce, znotraj plosce)
+		if dx + x < 0 or dx + x >= self.m or dy + y < 0 or dy + y >= self.n or self.polja[dy+y][dx+x].tip != 'trg' or abs(dx)+abs(dy)!=1:
+			print("Nepravilen trg.")
+			return None
+		self.roboti[irobot].odlozi(self.polja[y+dy][x+dx])
 
 	def uvozi_stanje(self, filename):
 		plosca = []
@@ -125,6 +176,8 @@ class Stanje:
 				self.polja[robot.polozaj[0]][robot.polozaj[1]].atributi = robot
 			else:
 				print('Robot {} ne more biti postavljen na izbrano polje'.format(robot))
+		self.m = len(self.polja)
+		self.n = len(self.polja[0])
 
 # stanje1 = Stanje([[Polje("garaza",None),Polje("pot",None),Polje("pot",None)],[Polje("pot",None),Polje("ovira"),Polje("pot",None)],[Polje("trg",{"moka":3,"voda":2,"jajca":4}),Polje("ovira"),Polje("skladisce",{"moka":1,"voda":1})]],[Robot(2,(0,0),("",0))])
 
