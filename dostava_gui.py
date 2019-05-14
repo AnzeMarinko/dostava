@@ -112,7 +112,7 @@ lalgoritem = tkinter.Label(ukazi, text='Izberi načini reševanja:')
 option_algoritem = tkinter.OptionMenu(ukazi, algoritem, 'Brez algoritma', 'A*', 'Real time A*', 'Reinforcement learning')
 # moznost izbire različnih primerov
 primer = tkinter.StringVar(ukazi)
-primer.set('test1') # default value
+primer.set('test-3x3-palacinke') # default value
 lprimer = tkinter.Label(ukazi, text='Izberi primer:')
 option_primer = tkinter.OptionMenu(ukazi, primer, *os.listdir('testni_primeri'), command=novo_stanje)
 # postavitev objektov
