@@ -1,6 +1,7 @@
 import podatkovne_strukture as ps
 import umetna_inteligenca as ui
 import tkinter
+import os
 
 
 
@@ -13,10 +14,10 @@ import tkinter
 
 
 # velikost igralne plosce
-w = 600
-h = 500
+w = 900
+h = 550
 # naslov datoteke z zapisanom zacetnim stanjem
-infile = 'testni_primeri/test1.txt'
+infile = 'testni_primeri/test-3x3-palacinke.txt'
 
 # uvoz stanja
 stanje = ps.Stanje([[]],[])
@@ -71,7 +72,7 @@ def osvezi():
 
 # stanje nastavi na nov primer:
 def novo_stanje(izbrani_primer):
-	new_infile = 'testni_primeri/' + izbrani_primer + '.txt'
+	new_infile = 'testni_primeri/' + izbrani_primer
 	stanje.uvozi_stanje(new_infile)
 	osvezi()
 	print(stanje)
@@ -116,7 +117,7 @@ option_algoritem = tkinter.OptionMenu(ukazi, algoritem, 'Brez algoritma', 'A*', 
 primer = tkinter.StringVar(ukazi)
 primer.set('test1') # default value
 lprimer = tkinter.Label(ukazi, text='Izberi primer:')
-option_primer = tkinter.OptionMenu(ukazi, primer, 'test1', 'test2', 'test3', command=novo_stanje)
+option_primer = tkinter.OptionMenu(ukazi, primer, *os.listdir('testni_primeri'), command=novo_stanje)
 # postavitev objektov
 idr.grid(row=0, column=0)
 dx.grid(row=1, column=0)

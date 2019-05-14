@@ -1,0 +1,8 @@
+palacinka velikanka
+
+skladisce jajca.30,pot,pot,trg moka.20 jajca.25 mleko.21
+skladisce mleko.24,pot,ovira,pot
+skladisce moka.25,pot,pot,pot
+ovira,garaza,ovira,ovira
+
+2,1,3,,0
