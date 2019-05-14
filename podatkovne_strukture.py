@@ -239,16 +239,17 @@ class Stanje:
 	def ali_je_konec(self):
 		for i in range(self.n):
 			for j in range(self.m):
-				if self.polja[i][j] == 'trg':
+				if self.polja[i][j].tip == 'trg':
 					for blago, kolicina in self.polja[i][j].atributi.items():
 						if kolicina != 0:
 							#print('Trg {} potrebuje še {} enot {}.'.format(self.polja[i][j],kolicina, blago))
 							return False
 		for robot in self.roboti:
 			(x,y)=robot.polozaj
-			if self.polja[y][x] != 'garaza':
+			if self.polja[y][x].tip != 'garaza':
 				#print('Robot {} ni v garaži.'.format(robot))
 				return False
+		print('KONEC!')
 		return True
 
 	def random_poteza(self):
