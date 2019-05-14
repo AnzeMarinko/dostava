@@ -164,16 +164,17 @@ def odlozi():
 	osvezi()
 
 def nakljucna_poteza():
-	poteza = stanje.random_poteza()
-	if poteza[0] == 'premakni':
-		stanje.premakni(poteza[1], poteza[2], poteza[3])
-	elif poteza[0] == 'nalaganje':
-		stanje.nalaganje(poteza[1], poteza[2], poteza[3],poteza[4], poteza[5])
-	elif poteza[0] == 'odlaganje':
-		stanje.odlaganje(poteza[1], poteza[2], poteza[3])
-	osvezi()
-	if stanje.ali_je_konec():
-		konec = tkinter.Label(plosca, text='Konec')
-		konec.grid(row=1,column=1)
+	if stanje.ali_je_konec() == False:
+		poteza = stanje.random_poteza()
+		if poteza[0] == 'premakni':
+			stanje.premakni(poteza[1], poteza[2], poteza[3])
+		elif poteza[0] == 'nalaganje':
+			stanje.nalaganje(poteza[1], poteza[2], poteza[3],poteza[4], poteza[5])
+		elif poteza[0] == 'odlaganje':
+			stanje.odlaganje(poteza[1], poteza[2], poteza[3])
+		osvezi()
+		if stanje.ali_je_konec():
+			konec = tkinter.Label(plosca, text='Konec') #NE IZPISUJE!!!
+			konec.grid(row=1,column=1)
 
 window.mainloop()
