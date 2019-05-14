@@ -242,12 +242,12 @@ class Stanje:
 				if self.polja[i][j] == 'trg':
 					for blago, kolicina in self.polja[i][j].atributi.items():
 						if kolicina != 0:
-							print('Trg {} potrebuje še {} enot {}.'.format(self.polja[i][j],kolicina, blago))
+							#print('Trg {} potrebuje še {} enot {}.'.format(self.polja[i][j],kolicina, blago))
 							return False
 		for robot in self.roboti:
 			(x,y)=robot.polozaj
 			if self.polja[y][x] != 'garaza':
-				print('Robot {} ni v garaži.'.format(robot))
+				#print('Robot {} ni v garaži.'.format(robot))
 				return False
 		return True
 
