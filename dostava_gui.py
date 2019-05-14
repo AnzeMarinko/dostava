@@ -8,9 +8,6 @@ import os
 
 # ==============================:
 # TODO:
-	# v meni daj moznosti poganjanja razlicnih algoritmov UI, uvoz stanja iz datoteke, izris in print zaporedja potez ...
-	# novi testni primeri
-
 
 
 # velikost igralne plosce
@@ -175,5 +172,8 @@ def nakljucna_poteza():
 	elif poteza[0] == 'odlaganje':
 		stanje.odlaganje(poteza[1], poteza[2], poteza[3])
 	osvezi()
+	if stanje.ali_je_konec():
+		konec = tkinter.Label(plosca, text='Konec')
+		konec.grid(row=1,column=1)
 
 window.mainloop()
