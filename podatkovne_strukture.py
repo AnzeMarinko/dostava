@@ -193,7 +193,6 @@ class Stanje:
 			(x,y)=self.roboti[irobot].polozaj
 			# PREMAKNI:
 			if x+1 < self.m and self.polja[y][x+1].tip in ['garaza', 'pot'] and self.polja[y][x+1].atributi == None:
-				print(self.polja[y][x+1].atributi)
 				poteze.append(('premakni',irobot, 1, 0))
 			if x-1 >= 0 and  self.polja[y][x-1].tip in ['garaza', 'pot'] and self.polja[y][x-1].atributi == None:
 				poteze.append(('premakni',irobot, -1, 0))
@@ -247,16 +246,36 @@ class Stanje:
 							return False
 		for robot in self.roboti:
 			(x,y)=robot.polozaj
-			if self.polja[x][y] != 'garaza':
+			if self.polja[y][x] != 'garaza':
 				print('Robot {} ni v garaži.'.format(robot))
 				return False
 		return True
 
 	def random_poteza(self):
 		sez_potez = self.dovoljene_poteze()
-		print(sez_potez)
 		i = randint(0, len(sez_potez)-1)
 		return sez_potez[i]
+	
+	# Prebere zaporedje potez iz datoteke:
+	def preberi_zaporedje_potez(self, file_name):
+		with open(file_name,"r") as f:
+			poteza = f.readline()[:-1].split(",")
+			if poteza[0] == 'premakni':
+				self.premakni(poteza[1], poteza[2], poteza[3])
+			elif poteza[0] == 'nalaganje':
+				self.nalaganje(poteza[1], poteza[2], poteza[3],poteza[4], poteza[5])
+			elif poteza[0] == 'odlaganje':
+				self.odlaganje(poteza[1], poteza[2], poteza[3])
+			#osvezi()
+	
+	# Zapisi zaporedje potez v datoteko:
+	def zapisi_zaporedje_potez(file_name, sez_potez):
+		f_w = open(file_name,"w")
+		for poteza in sez_potez:
+			vrstica = ''
+			for i in poteza:
+				vrstica += str(i)
+			f_w.write(vrstica + '\n')
 	
 # stanje1 = Stanje([[Polje("garaza",None),Polje("pot",None),Polje("pot",None)],[Polje("pot",None),Polje("ovira"),Polje("pot",None)],[Polje("trg",{"moka":3,"voda":2,"jajca":4}),Polje("ovira"),Polje("skladisce",{"moka":1,"voda":1})]],[Robot(2,(0,0),("",0))])
 
