@@ -268,14 +268,14 @@ class Stanje:
 				self.odlaganje(poteza[1], poteza[2], poteza[3])
 			#osvezi()
 	
-	# Zapisi zaporedje potez v datoteko:
-	def zapisi_zaporedje_potez(file_name, sez_potez):
-		f_w = open(file_name,"w")
-		for poteza in sez_potez:
-			vrstica = ''
-			for i in poteza:
-				vrstica += str(i)
-			f_w.write(vrstica + '\n')
+# Zapisi zaporedje potez v datoteko:
+def zapisi_zaporedje_potez(file_name, sez_potez):
+	f_w = open(file_name,"w")
+	for poteza in sez_potez:
+		vrstica = ''
+		for i in poteza:
+			vrstica += str(i)
+		f_w.write(vrstica + '\n')
 	
 # stanje1 = Stanje([[Polje("garaza",None),Polje("pot",None),Polje("pot",None)],[Polje("pot",None),Polje("ovira"),Polje("pot",None)],[Polje("trg",{"moka":3,"voda":2,"jajca":4}),Polje("ovira"),Polje("skladisce",{"moka":1,"voda":1})]],[Robot(2,(0,0),("",0))])
 
