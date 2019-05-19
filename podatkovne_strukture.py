@@ -1,5 +1,6 @@
 # definicije objektov polje (tipa garaza, pot, skladisce, trg, ovira), robot in stanje
 from random import randint
+from copy import deepcopy
 
 
 
@@ -89,11 +90,12 @@ class Robot:
 class Stanje:
 	# definicija zacetnega stanja
 	# na poljih se ne rabimo podatka o zasedenosti z roboti
-	def __init__(self, polja=[[]], roboti=[]):
+	def __init__(self, polja=[[]], roboti=[], prejsno_stanje = None):
 		self.polja = polja
 		self.n = len(polja)
 		self.m = len(polja[0])
 		self.roboti = roboti
+		self.prejsno_stanje = prejsno_stanje
 		# na polja postavi robote
 		for robot in roboti:
 			if self.polja[robot.polozaj[1]][robot.polozaj[0]].tip in ['garaza', 'pot']:
@@ -118,7 +120,10 @@ class Stanje:
 		if dx + x < 0 or dx + x >= self.m or dy + y < 0 or dy + y >= self.n or self.polja[dy+y][dx+x].tip not in ['garaza','pot'] or abs(dx)+abs(dy)!=1:
 			print("Nepravilen premik.")
 			return None
+		# Shrani prejšno stanje in izvede premik:
+		prejsno_st = deepcopy(self)
 		premik = self.roboti[irobot].premakni(dx,dy)
+		self.prejsno_stanje = prejsno_st
 		# poleg spremembe polozaja robota popravi tudi lastnosti polj
 		self.polja[premik[0][1]][premik[0][0]].atributi = None
 		self.polja[premik[1][1]][premik[1][0]].atributi = self.roboti[irobot]
@@ -138,7 +143,10 @@ class Stanje:
 		if self.polja[dy+y][dx+x].atributi.get(blago,0) <= 0:
 			print("Nedosegljivo blago.")
 			return None
+		# Shrani prejšno stanje in izvede nalaganje:
+		prejsno_st = prejsno_st = deepcopy(self)
 		self.roboti[irobot].nalozi(self.polja[y+dy][x+dx], blago, kolicina)
+		self.prejsno_stanje = prejsno_st
 	
 	# robot iz seznama self.roboti z indeksom irobot odlozi blago na trg dx desno in dy dol od robota
 	def odlaganje(self, irobot, dx, dy):
@@ -151,7 +159,10 @@ class Stanje:
 		if dx + x < 0 or dx + x >= self.m or dy + y < 0 or dy + y >= self.n or self.polja[dy+y][dx+x].tip != 'trg' or abs(dx)+abs(dy)!=1:
 			print("Nepravilen trg.")
 			return None
+		# Shrani prejšno stanje in izvede odlaganje:
+		prejsno_st = prejsno_st = deepcopy(self)
 		self.roboti[irobot].odlozi(self.polja[y+dy][x+dx])
+		self.prejsno_stanje = prejsno_st
 	
 	# uvoz stanja iz datoteke (za obliko datoteke glej spodaj)
 	def uvozi_stanje(self, filename):
