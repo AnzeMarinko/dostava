@@ -109,6 +109,12 @@ class Stanje:
 			opis += str(vrstica) + "\n"
 		return opis
 	
+	def pretvori_v_niz(self):
+		opis = "Stanje:    " + str(self.roboti) + "\n"
+		for vrstica in self.polja:
+			opis += str(vrstica) + "\n"
+		return opis
+	
 	# robota iz seznama self.roboti z indeksom irobot premakni za dx desno in dy dol
 	def premakni(self, irobot, dx, dy):
 		# preveri ce ta robot obstaja
@@ -267,6 +273,15 @@ class Stanje:
 		sez_potez = self.dovoljene_poteze()
 		i = randint(0, len(sez_potez)-1)
 		return sez_potez[i]
+	
+	#Izvede sprejeto potezo:
+	def izvedi_potezo(self, poteza):
+		if poteza[0] == 'premakni':
+			self.premakni(poteza[1], poteza[2], poteza[3])
+		elif poteza[0] == 'nalaganje':
+			self.nalaganje(poteza[1], poteza[2], poteza[3],poteza[4], poteza[5])
+		elif poteza[0] == 'odlaganje':
+			self.odlaganje(poteza[1], poteza[2], poteza[3])
 	
 	# Prebere zaporedje potez iz datoteke:
 	def preberi_zaporedje_potez(self, file_name):
