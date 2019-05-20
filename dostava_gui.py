@@ -15,7 +15,7 @@ import os
 
 # velikost igralne plosce
 w = 900
-h = 550
+h = 500
 # naslov datoteke z zapisanom zacetnim stanjem
 infile = 'testni_primeri/test-3x3-palacinke.txt'
 
@@ -66,9 +66,10 @@ def osvezi():
 				background="Black"
 				text = ''
 			# definicija objekta
-			tkinter.Frame(plosca, width=w//stanje.n, height=h//stanje.m, background = background).grid(row=vrstica,column=polje)
+			tkinter.Frame(plosca, width=w//stanje.m, height=h//stanje.n, background = background).grid(row=vrstica,column=polje)
 			if len(text) > 0:
-				tkinter.Label(plosca,text=text).grid(row=vrstica,column=polje)
+				lab = tkinter.Label(plosca,text=text).grid(row=vrstica,column=polje)
+				lab.config(fontsize="9")
 
 # stanje nastavi na nov primer:
 def novo_stanje(izbrani_primer):
@@ -115,7 +116,7 @@ lalgoritem = tkinter.Label(ukazi, text='Izberi načini reševanja:')
 option_algoritem = tkinter.OptionMenu(ukazi, algoritem, 'Brez algoritma', 'A*', 'Real time A*', 'Reinforcement learning')
 # moznost izbire različnih primerov
 primer = tkinter.StringVar(ukazi)
-primer.set('test1') # default value
+primer.set('test-3x3-palacinke.txt') # default value
 lprimer = tkinter.Label(ukazi, text='Izberi primer:')
 option_primer = tkinter.OptionMenu(ukazi, primer, *os.listdir('testni_primeri'), command=novo_stanje)
 # postavitev objektov

@@ -1,0 +1,9 @@
+sadna kupa
+
+trg banane.2 smetana.1,ovira,trg jabolka.2,trg jagode.3
+pot,ovira,pot,pot
+pot,pot,pot,pot
+garaza,skladisce banane.4 jabolka.2 smetana.3,skladisce jagode.3,garaza
+
+2,0,3,,0
+3,3,3,,0

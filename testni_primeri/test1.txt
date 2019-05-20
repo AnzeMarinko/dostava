@@ -1,0 +1,8 @@
+palacinke
+
+garaza,pot,skladisce moka.3 jajca.5
+garaza,pot,pot
+trg moka.2 jajca.3 mleko.4,pot,skladisce mleko.6
+
+3,0,0,,0
+3,0,1,,0
