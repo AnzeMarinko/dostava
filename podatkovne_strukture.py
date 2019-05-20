@@ -1,5 +1,6 @@
 # definicije objektov polje (tipa garaza, pot, skladisce, trg, ovira), robot in stanje
 from random import randint
+from copy import deepcopy
 
 
 
@@ -89,11 +90,12 @@ class Robot:
 class Stanje:
 	# definicija zacetnega stanja
 	# na poljih se ne rabimo podatka o zasedenosti z roboti
-	def __init__(self, polja=[[]], roboti=[]):
+	def __init__(self, polja=[[]], roboti=[], prejsno_stanje = None):
 		self.polja = polja
 		self.n = len(polja)
 		self.m = len(polja[0])
 		self.roboti = roboti
+		self.prejsno_stanje = prejsno_stanje
 		# na polja postavi robote
 		for robot in roboti:
 			if self.polja[robot.polozaj[1]][robot.polozaj[0]].tip in ['garaza', 'pot']:
@@ -102,6 +104,12 @@ class Stanje:
 				print('Robot {} ne more biti postavljen na izbrano polje'.format(robot))
 
 	def __repr__(self):
+		opis = "Stanje:    " + str(self.roboti) + "\n"
+		for vrstica in self.polja:
+			opis += str(vrstica) + "\n"
+		return opis
+	
+	def pretvori_v_niz(self):
 		opis = "Stanje:    " + str(self.roboti) + "\n"
 		for vrstica in self.polja:
 			opis += str(vrstica) + "\n"
@@ -118,7 +126,10 @@ class Stanje:
 		if dx + x < 0 or dx + x >= self.m or dy + y < 0 or dy + y >= self.n or self.polja[dy+y][dx+x].tip not in ['garaza','pot'] or abs(dx)+abs(dy)!=1:
 			print("Nepravilen premik.")
 			return None
+		# Shrani prejšno stanje in izvede premik:
+		prejsno_st = deepcopy(self)
 		premik = self.roboti[irobot].premakni(dx,dy)
+		self.prejsno_stanje = prejsno_st
 		# poleg spremembe polozaja robota popravi tudi lastnosti polj
 		self.polja[premik[0][1]][premik[0][0]].atributi = None
 		self.polja[premik[1][1]][premik[1][0]].atributi = self.roboti[irobot]
@@ -138,7 +149,10 @@ class Stanje:
 		if self.polja[dy+y][dx+x].atributi.get(blago,0) <= 0:
 			print("Nedosegljivo blago.")
 			return None
+		# Shrani prejšno stanje in izvede nalaganje:
+		prejsno_st = prejsno_st = deepcopy(self)
 		self.roboti[irobot].nalozi(self.polja[y+dy][x+dx], blago, kolicina)
+		self.prejsno_stanje = prejsno_st
 	
 	# robot iz seznama self.roboti z indeksom irobot odlozi blago na trg dx desno in dy dol od robota
 	def odlaganje(self, irobot, dx, dy):
@@ -151,7 +165,10 @@ class Stanje:
 		if dx + x < 0 or dx + x >= self.m or dy + y < 0 or dy + y >= self.n or self.polja[dy+y][dx+x].tip != 'trg' or abs(dx)+abs(dy)!=1:
 			print("Nepravilen trg.")
 			return None
+		# Shrani prejšno stanje in izvede odlaganje:
+		prejsno_st = prejsno_st = deepcopy(self)
 		self.roboti[irobot].odlozi(self.polja[y+dy][x+dx])
+		self.prejsno_stanje = prejsno_st
 	
 	# uvoz stanja iz datoteke (za obliko datoteke glej spodaj)
 	def uvozi_stanje(self, filename):
@@ -193,7 +210,6 @@ class Stanje:
 			(x,y)=self.roboti[irobot].polozaj
 			# PREMAKNI:
 			if x+1 < self.m and self.polja[y][x+1].tip in ['garaza', 'pot'] and self.polja[y][x+1].atributi == None:
-				print(self.polja[y][x+1].atributi)
 				poteze.append(('premakni',irobot, 1, 0))
 			if x-1 >= 0 and  self.polja[y][x-1].tip in ['garaza', 'pot'] and self.polja[y][x-1].atributi == None:
 				poteze.append(('premakni',irobot, -1, 0))
@@ -240,23 +256,53 @@ class Stanje:
 	def ali_je_konec(self):
 		for i in range(self.n):
 			for j in range(self.m):
-				if self.polja[i][j] == 'trg':
+				if self.polja[i][j].tip == 'trg':
 					for blago, kolicina in self.polja[i][j].atributi.items():
 						if kolicina != 0:
-							print('Trg {} potrebuje še {} enot {}.'.format(self.polja[i][j],kolicina, blago))
+							#print('Trg {} potrebuje še {} enot {}.'.format(self.polja[i][j],kolicina, blago))
 							return False
 		for robot in self.roboti:
 			(x,y)=robot.polozaj
-			if self.polja[x][y] != 'garaza':
-				print('Robot {} ni v garaži.'.format(robot))
+			if self.polja[y][x].tip != 'garaza':
+				#print('Robot {} ni v garaži.'.format(robot))
 				return False
+		print('KONEC!')
 		return True
 
 	def random_poteza(self):
 		sez_potez = self.dovoljene_poteze()
-		print(sez_potez)
 		i = randint(0, len(sez_potez)-1)
 		return sez_potez[i]
+	
+	#Izvede sprejeto potezo:
+	def izvedi_potezo(self, poteza):
+		if poteza[0] == 'premakni':
+			self.premakni(poteza[1], poteza[2], poteza[3])
+		elif poteza[0] == 'nalaganje':
+			self.nalaganje(poteza[1], poteza[2], poteza[3],poteza[4], poteza[5])
+		elif poteza[0] == 'odlaganje':
+			self.odlaganje(poteza[1], poteza[2], poteza[3])
+	
+	# Prebere zaporedje potez iz datoteke:
+	def preberi_zaporedje_potez(self, file_name):
+		with open(file_name,"r") as f:
+			poteza = f.readline()[:-1].split(",")
+			if poteza[0] == 'premakni':
+				self.premakni(poteza[1], poteza[2], poteza[3])
+			elif poteza[0] == 'nalaganje':
+				self.nalaganje(poteza[1], poteza[2], poteza[3],poteza[4], poteza[5])
+			elif poteza[0] == 'odlaganje':
+				self.odlaganje(poteza[1], poteza[2], poteza[3])
+			#osvezi()
+	
+# Zapisi zaporedje potez v datoteko:
+def zapisi_zaporedje_potez(file_name, sez_potez):
+	f_w = open(file_name,"w")
+	for poteza in sez_potez:
+		vrstica = ''
+		for i in poteza:
+			vrstica += str(i)
+		f_w.write(vrstica + '\n')
 	
 # stanje1 = Stanje([[Polje("garaza",None),Polje("pot",None),Polje("pot",None)],[Polje("pot",None),Polje("ovira"),Polje("pot",None)],[Polje("trg",{"moka":3,"voda":2,"jajca":4}),Polje("ovira"),Polje("skladisce",{"moka":1,"voda":1})]],[Robot(2,(0,0),("",0))])
 

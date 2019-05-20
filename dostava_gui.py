@@ -8,9 +8,6 @@ import os
 
 # ==============================:
 # TODO:
-	# v meni daj moznosti poganjanja razlicnih algoritmov UI, uvoz stanja iz datoteke, izris in print zaporedja potez ...
-	# novi testni primeri
-
 
 
 # velikost igralne plosce
@@ -116,7 +113,11 @@ lalgoritem = tkinter.Label(ukazi, text='Izberi načini reševanja:')
 option_algoritem = tkinter.OptionMenu(ukazi, algoritem, 'Brez algoritma', 'A*', 'Real time A*', 'Reinforcement learning')
 # moznost izbire različnih primerov
 primer = tkinter.StringVar(ukazi)
+<<<<<<< HEAD
 primer.set('test-3x3-palacinke.txt') # default value
+=======
+primer.set('test-3x3-palacinke') # default value
+>>>>>>> 9d35c658cc06a0099576b971d45bf2ae8b3dce1c
 lprimer = tkinter.Label(ukazi, text='Izberi primer:')
 option_primer = tkinter.OptionMenu(ukazi, primer, *os.listdir('testni_primeri'), command=novo_stanje)
 # postavitev objektov
@@ -168,13 +169,17 @@ def odlozi():
 	osvezi()
 
 def nakljucna_poteza():
-	poteza = stanje.random_poteza()
-	if poteza[0] == 'premakni':
-		stanje.premakni(poteza[1], poteza[2], poteza[3])
-	elif poteza[0] == 'nalaganje':
-		stanje.nalaganje(poteza[1], poteza[2], poteza[3],poteza[4], poteza[5])
-	elif poteza[0] == 'odlaganje':
-		stanje.odlaganje(poteza[1], poteza[2], poteza[3])
-	osvezi()
+	if stanje.ali_je_konec() == False:
+		poteza = stanje.random_poteza()
+		if poteza[0] == 'premakni':
+			stanje.premakni(poteza[1], poteza[2], poteza[3])
+		elif poteza[0] == 'nalaganje':
+			stanje.nalaganje(poteza[1], poteza[2], poteza[3],poteza[4], poteza[5])
+		elif poteza[0] == 'odlaganje':
+			stanje.odlaganje(poteza[1], poteza[2], poteza[3])
+		osvezi()
+		if stanje.ali_je_konec():
+			konec = tkinter.Label(plosca, text='Konec') #NE IZPISUJE!!!
+			konec.grid(row=1,column=1)
 
 window.mainloop()
