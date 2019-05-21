@@ -4,7 +4,7 @@ trg pismoAni.2 razglednicaBinetu.1 revijaNG.1,pot,pot,ovira,pot,trg pismoCenetu.
 pot,ovira,ovira,pot,ovira,pot,pot
 pot,pot,trg revijaNG.1 casopisZarek.1,ovira,pot,pot,pot
 pot,ovira,pot,pot,pot,ovira,pot
-garaza,pot,garaza,skladisce pismoAni.2 razglednicaBinetu.1 revijaNG.4 pismoCenetu.1 casopisZarek.3 paketDomnu.2,pot,ovira,pot
+garaza,pot,garaza,skladisce pismoAni.2 tednikNovice.3 razglednicaBinetu.1 revijaNG.4 pismoCenetu.1 casopisZarek.3 paketDomnu.2,pot,ovira,pot
 
 10,0,4,,0
 15,2,4,,0
