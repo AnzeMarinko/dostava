@@ -2,6 +2,7 @@ import podatkovne_strukture as ps
 import umetna_inteligenca as ui
 import tkinter
 import os
+import time
 
 
 
@@ -106,6 +107,7 @@ button2 = tkinter.Button(ukazi, text='Premik(robot,dx,dy)', width=25, command=la
 button3 = tkinter.Button(ukazi, text='Nalozi(robot,dx,dy,blago,kolicina)', width=25, command=lambda: nalozi())
 button4 = tkinter.Button(ukazi, text='Odlozi(robot,dx,dy)', width=25, command=lambda: odlozi())
 button5 = tkinter.Button(ukazi, text='Naključna poteza', width=25, command=lambda: nakljucna_poteza())
+button6 = tkinter.Button(ukazi, text='Zaženi rešitev', width=25, command=lambda: resitev())
 # moznosti poganjanja razlicnih algoritmov UI
 algoritem = tkinter.StringVar(ukazi)
 algoritem.set('Brez algoritma') # default value
@@ -113,11 +115,7 @@ lalgoritem = tkinter.Label(ukazi, text='Izberi načini reševanja:')
 option_algoritem = tkinter.OptionMenu(ukazi, algoritem, 'Brez algoritma', 'A*', 'Real time A*', 'Reinforcement learning')
 # moznost izbire različnih primerov
 primer = tkinter.StringVar(ukazi)
-<<<<<<< HEAD
 primer.set('test-3x3-palacinke.txt') # default value
-=======
-primer.set('test-3x3-palacinke') # default value
->>>>>>> 9d35c658cc06a0099576b971d45bf2ae8b3dce1c
 lprimer = tkinter.Label(ukazi, text='Izberi primer:')
 option_primer = tkinter.OptionMenu(ukazi, primer, *os.listdir('testni_primeri'), command=novo_stanje)
 # postavitev objektov
@@ -139,8 +137,32 @@ button4.grid(row=3,column=2)
 button5.grid(row=4,column=2)
 lalgoritem.grid(row=0,column=3)
 option_algoritem.grid(row=0,column=4)
+button6.grid(row=0,column=5)
 lprimer.grid(row=1,column=3)
 option_primer.grid(row=1,column=4)
+
+
+
+# Prebere zaporedje potez iz datoteke:
+def preberi_zaporedje_potez(stanje, file_name):
+	with open(file_name,"r") as f:
+		line = f.readline()
+		while line:
+			poteza = line[:-1].split(",")
+			print(poteza)
+			stanje.izvedi_potezo(poteza)
+			osvezi()
+			line = f.readline()
+			time.sleep(1) # Ne deluje ustrezno!!!!
+
+# Glede na uzbrani agoritem in primer poišče rešitev v datoteki in jo izvede:
+def resitev():
+	infile = 'testni_primeri/' + primer.get()
+	stanje.uvozi_stanje(infile)
+	osvezi()
+	# Doda se še za druge preiere/algoritme!!!
+	if algoritem.get() == 'Reinforcement learning' and primer.get() == 'test-3x3-palacinke.txt':
+		preberi_zaporedje_potez(stanje,'resitve/' + primer.get())
 
 # premik v skladu z dobljenimi parametri
 def premik():
