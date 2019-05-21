@@ -289,32 +289,24 @@ class Stanje:
 	#Izvede sprejeto potezo:
 	def izvedi_potezo(self, poteza):
 		if poteza[0] == 'premakni':
-			self.premakni(poteza[1], poteza[2], poteza[3])
+			self.premakni(int(poteza[1]), int(poteza[2]), int(poteza[3]))
 		elif poteza[0] == 'nalaganje':
-			self.nalaganje(poteza[1], poteza[2], poteza[3],poteza[4], poteza[5])
+			self.nalaganje(int(poteza[1]), int(poteza[2]), int(poteza[3]),poteza[4], int(poteza[5]))
 		elif poteza[0] == 'odlaganje':
-			self.odlaganje(poteza[1], poteza[2], poteza[3])
-	
-	# Prebere zaporedje potez iz datoteke:
-	def preberi_zaporedje_potez(self, file_name):
-		with open(file_name,"r") as f:
-			poteza = f.readline()[:-1].split(",")
-			if poteza[0] == 'premakni':
-				self.premakni(poteza[1], poteza[2], poteza[3])
-			elif poteza[0] == 'nalaganje':
-				self.nalaganje(poteza[1], poteza[2], poteza[3],poteza[4], poteza[5])
-			elif poteza[0] == 'odlaganje':
-				self.odlaganje(poteza[1], poteza[2], poteza[3])
-			#osvezi()
-	
+			self.odlaganje(int(poteza[1]), int(poteza[2]), int(poteza[3]))
+			
 # Zapisi zaporedje potez v datoteko:
 def zapisi_zaporedje_potez(file_name, sez_potez):
 	f_w = open(file_name,"w")
 	for poteza in sez_potez:
 		vrstica = ''
-		for i in poteza:
-			vrstica += str(i)
-		f_w.write(vrstica + '\n')
+		for i in poteza[:-1]:
+			vrstica += str(i) + ','
+		'''if poteza == sez_potez[-1]:
+			f_w.write(vrstica + str(poteza[-1]))
+		else:
+			f_w.write(vrstica + str(poteza[-1]) + '\n')'''
+		f_w.write(vrstica + str(poteza[-1]) + '\n') # \n mora dodati tudi v zadnjo vrstico, da pravilno deluje funkcija za branje!!!
 	
 # stanje1 = Stanje([[Polje("garaza",None),Polje("pot",None),Polje("pot",None)],[Polje("pot",None),Polje("ovira"),Polje("pot",None)],[Polje("trg",{"moka":3,"voda":2,"jajca":4}),Polje("ovira"),Polje("skladisce",{"moka":1,"voda":1})]],[Robot(2,(0,0),("",0))])
 
