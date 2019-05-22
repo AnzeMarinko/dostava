@@ -221,19 +221,19 @@ class Stanje:
 				if x+1 < self.m and self.polja[y][x+1].tip == 'skladisce':
 					for blago, kolicina in self.polja[y][x+1].atributi.items():
 						k = min(kolicina, max_kol)
-						while p[blago] <= k:
+						while max(1,min(max_kol,p[blago])) <= k:
 							poteze.append(('nalaganje', irobot, 1, 0, blago, k))
 							k -= 1
 				if x-1 >= 0 and self.polja[y][x-1].tip == 'skladisce':
 					for blago, kolicina in self.polja[y][x-1].atributi.items():
 						k = min(kolicina, max_kol)
-						while p[blago] <= k:
+						while max(1,min(max_kol,p[blago])) <= k:
 							poteze.append(('nalaganje', irobot, -1, 0, blago, k))
 							k -= 1
 				if y+1 < self.n and self.polja[y+1][x].tip == 'skladisce':
 					for blago, kolicina in self.polja[y+1][x].atributi.items():
 						k = min(kolicina, max_kol)
-						while p[blago] <= k:
+						while max(1,min(max_kol,p[blago])) <= k:
 							poteze.append(('nalaganje', irobot, 0, 1, blago, k))
 							k -= 1
 				if y-1 >= 0 and self.polja[y-1][x].tip == 'skladisce':
