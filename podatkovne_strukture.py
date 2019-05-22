@@ -167,7 +167,7 @@ class Stanje:
 			print("Nepravilen trg.")
 			return None
 		# Shrani prejšno stanje in izvede odlaganje:
-		prejsno_st = prejsno_st = deepcopy(self)
+		prejsno_st = deepcopy(self)
 		self.roboti[irobot].odlozi(self.polja[y+dy][x+dx])
 		self.prejsno_stanje = prejsno_st
 	
