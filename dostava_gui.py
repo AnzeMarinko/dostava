@@ -66,8 +66,9 @@ def osvezi():
 			# definicija objekta
 			tkinter.Frame(plosca, width=w//stanje.m, height=h//stanje.n, background = background).grid(row=vrstica,column=polje)
 			if len(text) > 0:
-				lab = tkinter.Label(plosca,text=text).grid(row=vrstica,column=polje)
-				lab.config(fontsize="9")
+				#lab = tkinter.Label(plosca,text=text).grid(row=vrstica,column=polje)
+				#lab.config(fontsize="9") Meni to ne dela, zato sem odstranila?
+				tkinter.Label(plosca,text=text).grid(row=vrstica,column=polje)
 
 # stanje nastavi na nov primer:
 def novo_stanje(izbrani_primer):
