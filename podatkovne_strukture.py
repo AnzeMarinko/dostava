@@ -268,11 +268,14 @@ class Stanje:
 		return poteze
 
 	# preveri, ce je konec (vsi trgi brez povprasevanj in roboti v garazah)
+		# preveri, ce je konec (vsi trgi brez povprasevanj in roboti v garazah)
 	def ali_je_konec(self):
 		for i in range(self.n):
 			for j in range(self.m):
 				if self.polja[i][j].tip == 'trg' and self.polja[i][j].atributi:
-					return False
+					for blago, kolicina in self.polja[i][j].atributi.items():
+						if kolicina != 0:
+							return False
 		'''for robot in self.roboti:
 			(x,y)=robot.polozaj
 			if self.polja[y][x].tip != 'garaza':
