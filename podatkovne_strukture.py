@@ -239,13 +239,13 @@ class Stanje:
 			(x,y)=self.roboti[irobot].polozaj
 			# ODLAGANJE:
 			if self.roboti[irobot].blago != ('',0):
-				if x+1 < self.m and self.polja[y][x+1].tip == 'trg':
+				if x+1 < self.m and self.polja[y][x+1].tip == 'trg' and (blago[0] in self.polja[y][x+1].atributi.keys()):
 					poteze.append(('odlaganje',irobot, 1, 0)) 
-				if x-1 >= 0 and self.polja[y][x-1].tip == 'trg':
+				if x-1 >= 0 and self.polja[y][x-1].tip == 'trg' and (blago[0] in self.polja[y][x-1].atributi.keys()):
 					poteze.append(('odlaganje',irobot, -1, 0)) 
-				if y+1 < self.n and self.polja[y+1][x].tip == 'trg':
+				if y+1 < self.n and self.polja[y+1][x].tip == 'trg' and (blago[0] in self.polja[y+1][x].atributi.keys()):
 					poteze.append(('odlaganje',irobot, 0, 1)) 
-				if y-1 >= 0 and self.polja[y-1][x].tip == 'trg':
+				if y-1 >= 0 and self.polja[y-1][x].tip == 'trg'and (blago[0] in self.polja[y-1][x].atributi.keys()):
 					poteze.append(('odlaganje',irobot, 0, -1)) 
 		for irobot in range(0,len(self.roboti)):
 			(x,y)=self.roboti[irobot].polozaj
