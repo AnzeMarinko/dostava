@@ -4,6 +4,7 @@ import itertools
 from random import choices
 from copy import deepcopy
 
+# Generira funkcijo, ki določa igralno strategijo:
 def strategija(q, e): 
     def izberi_akcijo(state): 
         
@@ -41,6 +42,7 @@ def dodaj_stanje_v_q(q, stanje, sez_potez):
         q[shrani_stanje] = poteza_verjetnost
     return q
 
+# Ovrednoti razdalijo do trga:
 def razdaljija_do_trga(stanje, prejsno_stanje, poteza):
     robot = prejsno_stanje.roboti[poteza[1]]
     x = robot.polozaj[0] + poteza[2]
@@ -56,13 +58,16 @@ def razdaljija_do_trga(stanje, prejsno_stanje, poteza):
                     najblizja_nova = nova_razdalja
                 if stara_razdalja < najblizja_stra:
                     najblizja_stara = stara_razdalja
-    if najblizja_stara > najblizja_nova and najblizja_stara > 1:
-        return 1
+    if  najblizja_stara == 1:
+        return -0.1
+    if najblizja_stara > najblizja_nova:
+        return 0.01
     elif najblizja_stara < najblizja_nova:
         return -1
     else:
-        return 0
+        return -0.1
 
+# Ovrednoti razdalijo do skladišča:
 def razdaljija_do_skladisca(stanje, prejsno_stanje, poteza):
     robot = prejsno_stanje.roboti[poteza[1]]
     x = robot.polozaj[0] + poteza[2]
@@ -78,14 +83,16 @@ def razdaljija_do_skladisca(stanje, prejsno_stanje, poteza):
                     najblizja_nova = nova_razdalja
                 if stara_razdalja < najblizja_stra:
                     najblizja_stara = stara_razdalja
-    if najblizja_stara > najblizja_nova and najblizja_stara > 1:
-        return 1
+    if najblizja_stara == 1:
+        return -0.1
+    elif najblizja_stara > najblizja_nova:
+        return -0.001
     elif najblizja_stara < najblizja_nova:
         return -1
     else:
-        return 0
+        return -0.1
 
-
+# Izračuna nagrado:
 def poisci_nagrado(stanje, prejsno_stanje, poteza):
     if stanje.ali_je_konec() == True:
         return 100
@@ -108,12 +115,13 @@ def poisci_nagrado(stanje, prejsno_stanje, poteza):
             return(prejsno_stanje.polja[y][x].atributi[blago])
         else:
             return(prejsno_stanje.polja[y][x].atributi[blago] - stanje.polja[y][x].atributi[blago])
-    else:
-        return 0
-    '''elif poteza[0] == 'premakni' and robot.blago == ('',0):
+    elif poteza[0] == 'premakni' and robot.blago == ('',0):
         return(razdaljija_do_skladisca(stanje, prejsno_stanje, poteza))
     elif poteza[0] == 'premakni':
-        return(razdaljija_do_trga(stanje, prejsno_stanje, poteza))'''
+        return(razdaljija_do_trga(stanje, prejsno_stanje, poteza))
+    else:
+        return 0
+
 
 
 def q_learning(zacetno_stanje, st_poiskusov,q=dict(), diskontiraj = 0.06, 
@@ -135,23 +143,23 @@ def q_learning(zacetno_stanje, st_poiskusov,q=dict(), diskontiraj = 0.06,
 
     for iti_poiskus in range(st_poiskusov): 
         #print('st. piskuasa: ', iti_poiskus)
-        # Reset the environment and pick the first action 
+        # Shrani začetno stanje: 
         stanje = zacetno_stanje 
         #print(stanje)
                
         # Iz danega stanja vrne slovar akcija -> verjetnost 
         sez_akcij, verjetnosti_akcij = policy(stanje) 
         #print(sez_akcij, verjetnosti_akcij)
-        # choose action according to  
-        # the probability distribution 
+        # Izbere akcijo glede na uteži (podane verjetnosti):
         poteza = choices(sez_akcij, weights = verjetnosti_akcij, k=1)
         poteza = poteza[0]
+        #if poteza[0] == 'nalaganje':
         #print(poteza)
-        # take action and get reward, transit to next state
+        # izvede potezo in dobi nagrado:
         prejsno_stanje = deepcopy(stanje)
         stanje.izvedi_potezo(poteza)
         nagrada = poisci_nagrado(stanje, prejsno_stanje, poteza)
-
+        #print(nagrada)
         # Če novega stanja še ni v q ga doda, vsem akcijam iz stanja pripiše verjetnosti 0
         sez_potez = stanje.dovoljene_poteze()
         q = dodaj_stanje_v_q(q, stanje, sez_potez)
@@ -164,21 +172,22 @@ def q_learning(zacetno_stanje, st_poiskusov,q=dict(), diskontiraj = 0.06,
         td_delta = td_target - q[prejsno_stanje.pretvori_v_niz()][poteza]
         q[prejsno_stanje.pretvori_v_niz()][poteza] += alpha * td_delta 
         #print(q[prejsno_stanje.pretvori_v_niz()][poteza])
-        # done is True if episode terminated    
+        # Preveri ali je konec   
         if stanje.ali_je_konec():
             print('st. piskuasa: ', iti_poiskus)
-            print('Konec!')
+            print('Konec!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!')
             return q
         zacetno_stanje = stanje
 
     return q
 
 def ponavljaj_q_learning(st_poiskusov, st):
-    infile = 'testni_primeri/test-3x3-palacinke.txt'
+    infile = 'testni_primeri/test-5x7-postar.txt'
     stanje = ps.Stanje([[]],[])
     stanje.uvozi_stanje(infile)
-    q = q_learning(stanje, st_poiskusov,q = dict(), diskontiraj = 0.6, alpha = 0.6, e = 0.2)
+    q = q_learning(stanje, st_poiskusov,q = dict(), diskontiraj = 0.6, alpha = 0.6, e = 0.1)
     for i in range(st):
+        print(i)
         stanje = ps.Stanje([[]],[])
         stanje.uvozi_stanje(infile)
         q = q_learning(stanje, st_poiskusov,q = q, diskontiraj = 0.6, alpha = 0.6, e = 0.1)
@@ -187,7 +196,8 @@ def ponavljaj_q_learning(st_poiskusov, st):
 
 def poisci_pot(q, stanje):
     sez_potez = list()
-    while stanje.ali_je_konec() == False:
+    i = 0
+    while stanje.ali_je_konec() == False and i<250:
         if stanje.pretvori_v_niz() in q.keys():
             akcije = q[stanje.pretvori_v_niz()]
             najboljsa_akcija = max(akcije, key=lambda k: akcije[k])
@@ -196,21 +206,24 @@ def poisci_pot(q, stanje):
             sez_potez.append(najboljsa_akcija)
         else:
             print('Stanja ni v slovarju q!!')
-            print(q, stanje)
+            #print(q, stanje)
             break
-    ps.zapisi_zaporedje_potez('resitve/3x3-palacinke.txt', sez_potez)
+        i += 1
+    ps.zapisi_zaporedje_potez('resitve/q_l_test-5x7-postar.txt', sez_potez)
     print('Rešitev shranjena')
 
 
 # naslov datoteke z zapisanom zacetnim stanjem
-infile = 'testni_primeri/test-3x3-palacinke.txt'
+#infile = 'testni_primeri/test-3x3-palacinke.txt'
+infile = 'testni_primeri/test-5x7-postar.txt'
+
 
 # uvoz stanja
 stanje = ps.Stanje([[]],[])
 stanje.uvozi_stanje(infile)
 
 #q = ql.q_learning(stanje, 30, diskontiraj = 0.6, alpha = 0.6, e = 0.1)
-q = ponavljaj_q_learning(70, 150)
-#print(q)
+q = ponavljaj_q_learning(600, 500)
+print(q)
 
 poisci_pot(q, stanje)
