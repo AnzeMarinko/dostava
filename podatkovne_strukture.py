@@ -205,7 +205,8 @@ class Stanje:
 			for j in range(self.m):
 				if self.polja[i][j].tip == 'trg':
 					for blago, kolicina in self.polja[i][j].atributi.items():
-						p[blago] = min(kolicina,p.get(blago,kolicina))
+						if kolicina > 0:
+							p[blago] = (min(kolicina,p.get(blago,(kolicina,0))[0]),max(kolicina,p.get(blago,(0,kolicina))[1]))
 		for irobot in range(0,len(self.roboti)):
 			(x,y)=self.roboti[irobot].polozaj
 			# NALAGANJE:
@@ -213,39 +214,43 @@ class Stanje:
 				max_kol = self.roboti[irobot].prostor
 				if x+1 < self.m and self.polja[y][x+1].tip == 'skladisce':
 					for blago, kolicina in self.polja[y][x+1].atributi.items():
-						k = min(kolicina, max_kol)
-						while max(1,min(max_kol,p[blago])) <= k:
-							poteze.append(('nalaganje', irobot, 1, 0, blago, k))
-							k -= 1
+						if p.get(blago,(0,0))[1] > 0:
+							k = min(kolicina, max_kol, p.get(blago)[1])
+							while p[blago][0] <= k and k > 0:
+								poteze.append(('nalaganje', irobot, 1, 0, blago, k))
+								k -= 1
 				if x-1 >= 0 and self.polja[y][x-1].tip == 'skladisce':
 					for blago, kolicina in self.polja[y][x-1].atributi.items():
-						k = min(kolicina, max_kol)
-						while max(1,min(max_kol,p[blago])) <= k:
-							poteze.append(('nalaganje', irobot, -1, 0, blago, k))
-							k -= 1
+						if p.get(blago,(0,0))[1] > 0:
+							k = min(kolicina, max_kol, p.get(blago)[1])
+							while p[blago][0] <= k and k > 0:
+								poteze.append(('nalaganje', irobot, -1, 0, blago, k))
+								k -= 1
 				if y+1 < self.n and self.polja[y+1][x].tip == 'skladisce':
 					for blago, kolicina in self.polja[y+1][x].atributi.items():
-						k = min(kolicina, max_kol)
-						while max(1,min(max_kol,p[blago])) <= k:
-							poteze.append(('nalaganje', irobot, 0, 1, blago, k))
-							k -= 1
+						if p.get(blago,(0,0))[1] > 0:
+							k = min(kolicina, max_kol, p.get(blago)[1])
+							while p[blago][0] <= k and k > 0:
+								poteze.append(('nalaganje', irobot, 0, 1, blago, k))
+								k -= 1
 				if y-1 >= 0 and self.polja[y-1][x].tip == 'skladisce':
 					for blago, kolicina in self.polja[y-1][x].atributi.items():
-						k = min(kolicina, max_kol)
-						while p[blago] <= k:
-							poteze.append(('nalaganje', irobot, 0, -1, blago, k))
-							k -= 1
+						if p.get(blago,(0,0))[1] > 0:
+							k = min(kolicina, max_kol, p.get(blago)[1])
+							while p[blago][0] <= k and k > 0:
+								poteze.append(('nalaganje', irobot, 0, -1, blago, k))
+								k -= 1
 		for irobot in range(0,len(self.roboti)):
 			(x,y)=self.roboti[irobot].polozaj
 			# ODLAGANJE:
 			if self.roboti[irobot].blago != ('',0):
-				if x+1 < self.m and self.polja[y][x+1].tip == 'trg' and (blago[0] in self.polja[y][x+1].atributi.keys()):
+				if x+1 < self.m and self.polja[y][x+1].tip == 'trg' and (self.roboti[irobot].blago[0] in self.polja[y][x+1].atributi.keys()):
 					poteze.append(('odlaganje',irobot, 1, 0)) 
-				if x-1 >= 0 and self.polja[y][x-1].tip == 'trg' and (blago[0] in self.polja[y][x-1].atributi.keys()):
+				if x-1 >= 0 and self.polja[y][x-1].tip == 'trg' and (self.roboti[irobot].blago[0] in self.polja[y][x-1].atributi.keys()):
 					poteze.append(('odlaganje',irobot, -1, 0)) 
-				if y+1 < self.n and self.polja[y+1][x].tip == 'trg' and (blago[0] in self.polja[y+1][x].atributi.keys()):
+				if y+1 < self.n and self.polja[y+1][x].tip == 'trg' and (self.roboti[irobot].blago[0] in self.polja[y+1][x].atributi.keys()):
 					poteze.append(('odlaganje',irobot, 0, 1)) 
-				if y-1 >= 0 and self.polja[y-1][x].tip == 'trg'and (blago[0] in self.polja[y-1][x].atributi.keys()):
+				if y-1 >= 0 and self.polja[y-1][x].tip == 'trg'and (self.roboti[irobot].blago[0] in self.polja[y-1][x].atributi.keys()):
 					poteze.append(('odlaganje',irobot, 0, -1)) 
 		for irobot in range(0,len(self.roboti)):
 			(x,y)=self.roboti[irobot].polozaj
