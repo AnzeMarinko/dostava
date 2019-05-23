@@ -162,8 +162,8 @@ def resitev():
 	stanje.uvozi_stanje(infile)
 	osvezi()
 	# Doda se še za druge preiere/algoritme!!!
-	if algoritem.get() == 'Reinforcement learning' and primer.get() == 'test-3x3-palacinke.txt':
-		preberi_zaporedje_potez(stanje,'resitve/' + primer.get())
+	if algoritem.get() == 'Reinforcement learning':
+		preberi_zaporedje_potez(stanje,'resitve/q_l_' + primer.get())
 
 # premik v skladu z dobljenimi parametri
 def premik():
