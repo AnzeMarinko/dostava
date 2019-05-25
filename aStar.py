@@ -50,15 +50,17 @@ def astar(stanje):
 		auxstanje = copy.deepcopy(stanje)
 		stanje.izvedi_potezo(poteza)
 		# hevristika
-		f = minimal(stanje)
+		f = minimal(stanje)+1
 		# dodamo v kandidati
-		heappush(kandidati, Node([poteza], copy.deepcopy(stanje), (f,0)))
+		heappush(kandidati, Node([poteza], copy.deepcopy(stanje), f))
 		stanje = copy.deepcopy(auxstanje)
 		
 	while kandidati:
 		# vozlišče z najmanjšo vrednostjo
 		trenutno = heappop(kandidati)
-		print(trenutno.hevr)
+		#print(trenutno.hevr)
+		#print(trenutno.stanje)
+		input()
 		for poteza in trenutno.stanje.dovoljene_poteze():
 			auxstanje = copy.deepcopy(trenutno.stanje)
 			trenutno.stanje.izvedi_potezo(poteza)
@@ -68,7 +70,7 @@ def astar(stanje):
 			else:
 				# hevristika
 				m = minimal(trenutno.stanje)
-				f = (m+ len(trenutno.poteze),len(trenutno.poteze))
+				f = m+len(trenutno.poteze)
 				heappush(kandidati, Node(trenutno.poteze + [poteza], copy.deepcopy(trenutno.stanje), f))
 				trenutno.stanje = copy.deepcopy(auxstanje)
    

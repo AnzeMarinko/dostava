@@ -111,9 +111,9 @@ button5 = tkinter.Button(ukazi, text='Naključna poteza', width=25, command=lamb
 button6 = tkinter.Button(ukazi, text='Zaženi rešitev', width=25, command=lambda: resitev())
 # moznosti poganjanja razlicnih algoritmov UI
 algoritem = tkinter.StringVar(ukazi)
-algoritem.set('Brez algoritma') # default value
+algoritem.set('Reinforcement learning') # default value
 lalgoritem = tkinter.Label(ukazi, text='Izberi načini reševanja:')
-option_algoritem = tkinter.OptionMenu(ukazi, algoritem, 'Brez algoritma', 'A*', 'Real time A*', 'Reinforcement learning')
+option_algoritem = tkinter.OptionMenu(ukazi, algoritem, 'Brez algoritma', 'Reinforcement learning')
 # moznost izbire različnih primerov
 primer = tkinter.StringVar(ukazi)
 primer.set('test-3x3-palacinke.txt') # default value
@@ -147,14 +147,18 @@ option_primer.grid(row=1,column=4)
 # Prebere zaporedje potez iz datoteke:
 def preberi_zaporedje_potez(stanje, file_name):
 	with open(file_name,"r") as f:
-		line = f.readline()
-		while line:
-			poteza = line[:-1].split(",")
+		window.update()
+		time.sleep(0.5)
+		poteze = []
+		for line in f.readlines():
+			poteze.append(line[:-1].split(","))
+		for poteza in poteze:
 			print(poteza)
+		for poteza in poteze:
 			stanje.izvedi_potezo(poteza)
 			osvezi()
-			line = f.readline()
-			time.sleep(1) # Ne deluje ustrezno!!!!
+			window.update()
+			time.sleep(0.5) # Ne deluje ustrezno!!!!
 
 # Glede na uzbrani agoritem in primer poišče rešitev v datoteki in jo izvede:
 def resitev():
