@@ -264,6 +264,51 @@ class Stanje:
 			if y-1 >= 0 and self.polja[y-1][x].tip in ['garaza', 'pot'] and self.polja[y-1][x].atributi == None:
 				poteze.append(('premakni',irobot, 0, -1))
 		return poteze
+	
+	#V primeru dveh socasnih premikov preveri, ali si robota sekata poti:
+	def ali_se_sekata(self, poteza, poteza2):
+		(x1,y1)=self.roboti[int(poteza[1])].polozaj
+		(x2,y2)=self.roboti[int(poteza2[1])].polozaj
+		(x11,y11) = (x1+int(poteza[2]),y1+int(poteza[3]))
+		if (x11,y11) == (x2,y2):
+			return True
+		(x22,y22) = (x2+int(poteza2[2]),y2+int(poteza2[3]))
+		if (x22,y22) == (x1,y1) or (x11,y11) == (x22,y22):
+			return True
+		else:
+			return False
+	
+	#Kadar sta dve socasini potezi nalaganje iz istega skladisca enakega blaga, 
+	#preveri ali je blaga na trgu dovolj za obe nalaganji:
+	def ali_je_dovol_na_trgu(self,poteza, poteza2):
+		(x1,y1)=self.roboti[int(poteza[1])].polozaj
+		(x2,y2)=self.roboti[int(poteza2[1])].polozaj
+		(x11,y11) = (x1+int(poteza[2]),y1+int(poteza[3]))
+		(x22,y22) = (x2+int(poteza2[2]),y2+int(poteza2[3]))
+		if (x11,y11) == (x22,y22) and poteza[4] == poteza2[4]:
+			for blago, kolicina in self.polja[y11][x11].atributi.items():
+				if blago == poteza[4] and kolicina < poteza[5] + poteza2[5]:
+					return False
+		return True
+	
+	#Vse mozne socasne poteze: največ dva robota se premakneta hkrati 
+	#vsebuje tudi poteze ko se premakne en sam robot
+	def socasne_poteze(self):
+		sez_potez = self.dovoljene_poteze()
+		socasne_pot = list()
+		for poteza in sez_potez:
+			for poteza2 in sez_potez:
+				if poteza[1] != poteza2[1] and {poteza, poteza2} not in socasne_pot:
+					if poteza[0] == 'premakni' or poteza2[0] == 'premakni' and self.ali_se_sekata(poteza, poteza2) == False:
+						socasne_pot.append({poteza, poteza2})
+					elif poteza[0] == 'nalaganje' or poteza2[0] == 'nalaganje' and self.ali_je_dovol_na_trgu(poteza, poteza2) == True:
+						socasne_pot.append({poteza, poteza2})
+					else:
+						socasne_pot.append({poteza, poteza2})
+		for poteza in sez_potez:
+			socasne_pot.append({poteza})
+		return(socasne_pot)
+
 
 	# preveri, ce je konec (vsi trgi brez povprasevanj in roboti v garazah)
 		# preveri, ce je konec (vsi trgi brez povprasevanj in roboti v garazah)
