@@ -302,15 +302,15 @@ class Stanje:
 		socasne_pot = list()
 		for poteza in sez_potez:
 			for poteza2 in sez_potez:
-				if poteza[1] != poteza2[1] and {poteza, poteza2} not in socasne_pot:
+				if poteza[1] < poteza2[1] and [poteza, poteza2] not in socasne_pot:
 					if poteza[0] == 'premakni' or poteza2[0] == 'premakni' and self.ali_se_sekata(poteza, poteza2) == False:
-						socasne_pot.append({poteza, poteza2})
+						socasne_pot.append((poteza, poteza2))
 					elif poteza[0] == 'nalaganje' or poteza2[0] == 'nalaganje' and self.ali_je_dovol_na_trgu(poteza, poteza2) == True:
-						socasne_pot.append({poteza, poteza2})
+						socasne_pot.append((poteza, poteza2))
 					else:
-						socasne_pot.append({poteza, poteza2})
+						socasne_pot.append((poteza, poteza2))
 		for poteza in sez_potez:
-			socasne_pot.append({poteza})
+			socasne_pot.append((poteza))
 		return(socasne_pot)
 
 
