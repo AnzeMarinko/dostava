@@ -178,7 +178,10 @@ class Stanje:
 				vrstica = []
 				for polje in polja:
 					if len(polje) == 1:
-						vrstica.append(Polje(polje[0]))
+						if polje[0] in ['skladisce','trg']:
+							vrstica.append(Polje(polje[0],{}))
+						else:
+							vrstica.append(Polje(polje[0]))
 					else:
 						vrstica.append(Polje(polje[0],{blago:int(kolicina) for blago,kolicina in [x.split(".") for x in polje[1:]]}))
 				plosca.append(vrstica)
@@ -186,6 +189,7 @@ class Stanje:
 				robot = f.readline()[:-1].split(",")
 				if len(robot[0]) == 0:
 					break
+				print(robot)
 				roboti.append(Robot(int(robot[0]),(int(robot[1]),int(robot[2])),(robot[3],int(robot[4]))))
 		self.polja = plosca
 		self.roboti = roboti

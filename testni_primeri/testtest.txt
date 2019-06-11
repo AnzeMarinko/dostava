@@ -1,0 +1,8 @@
+Nakljucen test
+
+pot,pot,pot,skladisce Aa.2 Bb.4 Cc.6,trg Aa.1 Bb.3 Cc.2,pot
+pot,pot,skladisce Aa.5 Bb.10 Cc.4,pot,pot,trg Aa.2 Bb.1 Cc.1
+pot,ovira,pot,pot,pot,pot
+trg Bb.3 Cc.1,garaza,pot,ovira,pot,pot
+
+3,1,3,,0

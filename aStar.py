@@ -60,7 +60,7 @@ def astar(stanje):
 		trenutno = heappop(kandidati)
 		#print(trenutno.hevr)
 		#print(trenutno.stanje)
-		input()
+		print(trenutno.hevr, len(trenutno.poteze))
 		for poteza in trenutno.stanje.dovoljene_poteze():
 			auxstanje = copy.deepcopy(trenutno.stanje)
 			trenutno.stanje.izvedi_potezo(poteza)
