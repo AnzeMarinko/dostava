@@ -147,18 +147,23 @@ option_primer.grid(row=1,column=4)
 # Prebere zaporedje potez iz datoteke:
 def preberi_zaporedje_potez(stanje, file_name):
 	with open(file_name,"r") as f:
-		window.update()
-		time.sleep(0.5)
-		poteze = []
-		for line in f.readlines():
-			poteze.append(line[:-1].split(","))
-		for poteza in poteze:
-			print(poteza)
-		for poteza in poteze:
-			stanje.izvedi_potezo(poteza)
+		line = f.readline()
+		while line:
+			print(line[:-1])
+			if line[0] == '(':
+				poteza = line[:-1].split("),(")
+				for akcija in poteza:
+					akcija = akcija.replace('(','').replace(')','')
+					akcija = akcija.replace('\'', '')
+					akcija = akcija.split(", ")
+					stanje.izvedi_potezo(akcija)
+			else:
+				poteza = line[:-1].split(",")
+				stanje.izvedi_potezo(poteza)
 			osvezi()
 			window.update()
-			time.sleep(0.5) # Ne deluje ustrezno!!!!
+			time.sleep(1)
+			line = f.readline()
 
 # Glede na uzbrani agoritem in primer poišče rešitev v datoteki in jo izvede:
 def resitev():
