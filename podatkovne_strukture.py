@@ -147,7 +147,7 @@ class Stanje:
 		if self.polja[dy+y][dx+x].atributi.get(blago,0) <= 0:
 			print("Nedosegljivo blago.")
 			return None
-		# izvede nalaganje:
+		# Shrani prejšno stanje in izvede nalaganje:
 		self.roboti[irobot].nalozi(self.polja[y+dy][x+dx], blago, kolicina)
 	
 	# robot iz seznama self.roboti z indeksom irobot odlozi blago na trg dx desno in dy dol od robota
@@ -178,10 +178,7 @@ class Stanje:
 				vrstica = []
 				for polje in polja:
 					if len(polje) == 1:
-						if polje[0] in ['skladisce','trg']:
-							vrstica.append(Polje(polje[0],{}))
-						else:
-							vrstica.append(Polje(polje[0]))
+						vrstica.append(Polje(polje[0]))
 					else:
 						vrstica.append(Polje(polje[0],{blago:int(kolicina) for blago,kolicina in [x.split(".") for x in polje[1:]]}))
 				plosca.append(vrstica)
@@ -189,7 +186,6 @@ class Stanje:
 				robot = f.readline()[:-1].split(",")
 				if len(robot[0]) == 0:
 					break
-				print(robot)
 				roboti.append(Robot(int(robot[0]),(int(robot[1]),int(robot[2])),(robot[3],int(robot[4]))))
 		self.polja = plosca
 		self.roboti = roboti
@@ -209,8 +205,8 @@ class Stanje:
 			for j in range(self.m):
 				if self.polja[i][j].tip == 'trg':
 					for blago, kolicina in self.polja[i][j].atributi.items():
-						if kolicina > 0:
-							p[blago] = (min(kolicina,p.get(blago,(kolicina,0))[0]),max(kolicina,p.get(blago,(0,kolicina))[1]))
+						p[blago] = min(kolicina,p.get(blago,kolicina))
+		i = 1
 		for irobot in range(0,len(self.roboti)):
 			(x,y)=self.roboti[irobot].polozaj
 			# NALAGANJE:
@@ -218,43 +214,44 @@ class Stanje:
 				max_kol = self.roboti[irobot].prostor
 				if x+1 < self.m and self.polja[y][x+1].tip == 'skladisce':
 					for blago, kolicina in self.polja[y][x+1].atributi.items():
-						if p.get(blago,(0,0))[1] > 0:
-							k = min(kolicina, max_kol, p.get(blago)[1])
-							while p[blago][0] <= k and k > 0:
+						if blago in p.keys():
+							k = min(kolicina, max_kol)
+							while max(1,min(max_kol,p[blago])) <= k:
 								poteze.append(('nalaganje', irobot, 1, 0, blago, k))
 								k -= 1
 				if x-1 >= 0 and self.polja[y][x-1].tip == 'skladisce':
 					for blago, kolicina in self.polja[y][x-1].atributi.items():
-						if p.get(blago,(0,0))[1] > 0:
-							k = min(kolicina, max_kol, p.get(blago)[1])
-							while p[blago][0] <= k and k > 0:
+						if blago in p.keys():
+							k = min(kolicina, max_kol)
+							while max(1,min(max_kol,p[blago])) <= k:
 								poteze.append(('nalaganje', irobot, -1, 0, blago, k))
 								k -= 1
 				if y+1 < self.n and self.polja[y+1][x].tip == 'skladisce':
 					for blago, kolicina in self.polja[y+1][x].atributi.items():
-						if p.get(blago,(0,0))[1] > 0:
-							k = min(kolicina, max_kol, p.get(blago)[1])
-							while p[blago][0] <= k and k > 0:
+						if blago in p.keys():
+							k = min(kolicina, max_kol)
+							while max(1,min(max_kol,p[blago])) <= k:
 								poteze.append(('nalaganje', irobot, 0, 1, blago, k))
 								k -= 1
 				if y-1 >= 0 and self.polja[y-1][x].tip == 'skladisce':
 					for blago, kolicina in self.polja[y-1][x].atributi.items():
-						if p.get(blago,(0,0))[1] > 0:
-							k = min(kolicina, max_kol, p.get(blago)[1])
-							while p[blago][0] <= k and k > 0:
+						if blago in p.keys():
+							k = min(kolicina, max_kol)
+							while p[blago] <= k:
 								poteze.append(('nalaganje', irobot, 0, -1, blago, k))
 								k -= 1
 		for irobot in range(0,len(self.roboti)):
 			(x,y)=self.roboti[irobot].polozaj
 			# ODLAGANJE:
 			if self.roboti[irobot].blago != ('',0):
-				if x+1 < self.m and self.polja[y][x+1].tip == 'trg' and (self.roboti[irobot].blago[0] in self.polja[y][x+1].atributi.keys()):
+				blago = self.roboti[irobot].blago
+				if x+1 < self.m and self.polja[y][x+1].tip == 'trg' and (blago[0] in self.polja[y][x+1].atributi.keys()):
 					poteze.append(('odlaganje',irobot, 1, 0)) 
-				if x-1 >= 0 and self.polja[y][x-1].tip == 'trg' and (self.roboti[irobot].blago[0] in self.polja[y][x-1].atributi.keys()):
+				if x-1 >= 0 and self.polja[y][x-1].tip == 'trg' and (blago[0] in self.polja[y][x-1].atributi.keys()):
 					poteze.append(('odlaganje',irobot, -1, 0)) 
-				if y+1 < self.n and self.polja[y+1][x].tip == 'trg' and (self.roboti[irobot].blago[0] in self.polja[y+1][x].atributi.keys()):
+				if y+1 < self.n and self.polja[y+1][x].tip == 'trg' and (blago[0] in self.polja[y+1][x].atributi.keys()):
 					poteze.append(('odlaganje',irobot, 0, 1)) 
-				if y-1 >= 0 and self.polja[y-1][x].tip == 'trg'and (self.roboti[irobot].blago[0] in self.polja[y-1][x].atributi.keys()):
+				if y-1 >= 0 and self.polja[y-1][x].tip == 'trg' and (blago[0] in self.polja[y-1][x].atributi.keys()):
 					poteze.append(('odlaganje',irobot, 0, -1)) 
 		for irobot in range(0,len(self.roboti)):
 			(x,y)=self.roboti[irobot].polozaj
@@ -268,8 +265,7 @@ class Stanje:
 			if y-1 >= 0 and self.polja[y-1][x].tip in ['garaza', 'pot'] and self.polja[y-1][x].atributi == None:
 				poteze.append(('premakni',irobot, 0, -1))
 		return poteze
-	
-	#V primeru dveh socasnih premikov preveri, ali si robota sekata poti:
+
 	def ali_se_sekata(self, poteza, poteza2):
 		(x1,y1)=self.roboti[int(poteza[1])].polozaj
 		(x2,y2)=self.roboti[int(poteza2[1])].polozaj
@@ -295,8 +291,7 @@ class Stanje:
 					return False
 		return True
 	
-	#Vse mozne socasne poteze: največ dva robota se premakneta hkrati 
-	#vsebuje tudi poteze ko se premakne en sam robot
+	#V primeru dveh socasnih premikov preveri, ali si robota sekata poti:
 	def socasne_poteze(self):
 		sez_potez = self.dovoljene_poteze()
 		socasne_pot = list()
@@ -315,11 +310,11 @@ class Stanje:
 
 
 	# preveri, ce je konec (vsi trgi brez povprasevanj in roboti v garazah)
-		# preveri, ce je konec (vsi trgi brez povprasevanj in roboti v garazah)
+	# preveri, ce je konec (vsi trgi brez povprasevanj in roboti v garazah)
 	def ali_je_konec(self):
 		for i in range(self.n):
 			for j in range(self.m):
-				if self.polja[i][j].tip == 'trg' and self.polja[i][j].atributi:
+				if self.polja[i][j].tip == 'trg':
 					for blago, kolicina in self.polja[i][j].atributi.items():
 						if kolicina != 0:
 							return False
@@ -328,7 +323,7 @@ class Stanje:
 			if self.polja[y][x].tip != 'garaza':
 				#print('Robot {} ni v garaži.'.format(robot))
 				return False'''
-		print('KONEC!')
+		#print('KONEC!')
 		return True
 
 	def random_poteza(self):
@@ -338,11 +333,11 @@ class Stanje:
 	
 	#Izvede sprejeto potezo:
 	def izvedi_potezo(self, poteza):
-		if poteza[0] == 'premakni':
+		if str(poteza[0]) == 'premakni':
 			self.premakni(int(poteza[1]), int(poteza[2]), int(poteza[3]))
-		elif poteza[0] == 'nalaganje':
-			self.nalaganje(int(poteza[1]), int(poteza[2]), int(poteza[3]),poteza[4], int(poteza[5]))
-		elif poteza[0] == 'odlaganje':
+		elif str(poteza[0]) == 'nalaganje':
+			self.nalaganje(int(poteza[1]), int(poteza[2]), int(poteza[3]),str(poteza[4]), int(poteza[5]))
+		elif str(poteza[0]) == 'odlaganje':
 			self.odlaganje(int(poteza[1]), int(poteza[2]), int(poteza[3]))
 			
 # Zapisi zaporedje potez v datoteko:
@@ -363,26 +358,20 @@ def zapisi_zaporedje_potez(file_name, sez_potez):
 # uvoz iz tekstovne datoteke oblike:
 '''
 pomenljiv naslov stanja
-
 tip atributi,tip atributi,tip atributi, ... ,tip atributi
 tip atributi,tip atributi,tip atributi, ... ,tip atributi
 tip atributi,tip atributi,tip atributi, ... ,tip atributi
-
 prostor, i, j, blago, kolicina
 prostor, i, j, blago, kolicina
 prostor, i, j, blago, kolicina
-
 '''
 # kjer je tip dejanski tip, atributi pa so s presledki locene vrednosti blago.kolicina, kjer je to potrebno
 # npr.:
 '''
 majhen test
-
 garaza, pot, skladisce moka.3 jajca.5
 garaza, pot, pot
 trg moka.2 jajca.3 mleko.4, pot, skladisce mleko.6
-
 3,0,0,,0
 3,1,0,,0
-
 '''
