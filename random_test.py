@@ -1,11 +1,11 @@
 # random stanje
 import random
 import sys
+import time
 
-outfiles = ["testni_primeri/test{}.txt".format(i) for i in range(int(sys.argv[1]))]
 # primer ukaza v konzoli: python3 random_test.py 10
 
-for file in outfiles:
+for index in range(int(sys.argv[1])):
 	sirina = random.randint(3,4)  # sirina plosce
 	visina = random.randint(3,4)  # visina plosce
 	roboti = random.randint(1,2)  # stevilo robotov
@@ -68,9 +68,10 @@ for file in outfiles:
 			simple[j][i] = 'x'
 			polja[j][i] = 'ovira'
 
-	polja = "Nakljucen test\n\n"+"\n".join([",".join(vrstica) for vrstica in polja])+"\n"+roboti+"\n"
+	polja = "test{}\n\n".format(index)+"\n".join([",".join(vrstica) for vrstica in polja])+"\n"+roboti+"\n"
 	simple = "\n"+"\n".join([" ".join(vrstica) for vrstica in simple])
 	print(simple)
 
-	with open(file, "w") as f:
+	t = round(time.time())
+	with open("testni_primeri/test{}_{}.txt".format(t,index), "w") as f:
 		f.write(polja)
