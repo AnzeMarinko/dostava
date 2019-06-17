@@ -113,7 +113,7 @@ button6 = tkinter.Button(ukazi, text='Zaženi rešitev', width=25, command=lambd
 algoritem = tkinter.StringVar(ukazi)
 algoritem.set('Reinforcement learning') # default value
 lalgoritem = tkinter.Label(ukazi, text='Izberi načini reševanja:')
-option_algoritem = tkinter.OptionMenu(ukazi, algoritem, 'Brez algoritma', 'Reinforcement learning')
+option_algoritem = tkinter.OptionMenu(ukazi, algoritem, 'Brez algoritma', 'A*', 'Real time A*', 'Reinforcement learning')
 # moznost izbire različnih primerov
 primer = tkinter.StringVar(ukazi)
 primer.set('test-3x3-palacinke.txt') # default value
@@ -173,6 +173,8 @@ def resitev():
 	# Doda se še za druge preiere/algoritme!!!
 	if algoritem.get() == 'Reinforcement learning':
 		preberi_zaporedje_potez(stanje,'resitve/q_l_' + primer.get())
+	if algoritem.get() == 'A*':
+		preberi_zaporedje_potez(stanje,'resitve/' + 'astar_'+ primer.get())
 
 # premik v skladu z dobljenimi parametri
 def premik():
