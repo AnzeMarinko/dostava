@@ -3,6 +3,7 @@ import podatkovne_strukture as ps
 import copy
 import time
 import ql_socasni_premiki as ql
+import os
 
 
 class Node:
@@ -54,7 +55,7 @@ def q_hevristika(q, stanje):
 		return akcije[najboljsa_akcija]
  
 # algoritem A*
-def astar(stanje, hevristika, q):
+def astar(stanje, hevristika, q, t):
 	kandidati = []
 	#začetne poteze
 	for poteza in stanje.socasne_poteze():
@@ -78,6 +79,8 @@ def astar(stanje, hevristika, q):
 		trenutno = heappop(kandidati)
 		#print(trenutno.stanje)
 		#input()
+		if time.time()-t > 120:
+			return t, ['Out of Time.']
 		for poteza in trenutno.stanje.socasne_poteze():
 			auxstanje = copy.deepcopy(trenutno.stanje)
 			if type(poteza[0]) == tuple:
@@ -87,7 +90,7 @@ def astar(stanje, hevristika, q):
 				trenutno.stanje.izvedi_potezo(poteza)
 			#v primeru, da je to zadnja poteza
 			if trenutno.stanje.ali_je_konec():
-				return trenutno.poteze + [poteza]
+				return t, trenutno.poteze + [poteza]
 			else:
 				# hevristika
 				if hevristika == 'q_hevristika':
@@ -108,26 +111,50 @@ def test(filename, hevristika):
 	if hevristika == 'q_hevristika':
 		q = ql.ponavljaj_q_learning(100, 20000)
 		stanje.uvozi_stanje(filename)
-		sol = astar(stanje,  hevristika, q)
+		tm, sol = astar(stanje,  hevristika, q, t)
 	else:
-		sol = astar(stanje,  hevristika, dict())
+		tm, sol = astar(stanje,  hevristika, dict(), t)
 	print()
 	for poteza in sol:
 		print(poteza)
 	print()
 	print(time.time()-t)
 	ps.zapisi_zaporedje_potez(filename[:-4]+"resitev.txt",sol)
-	return sol
+	return tm, sol
 
-# uvoz stanja
-infile = 'testni_primeri/test-3x3-palacinke.txt'
-stanje = ps.Stanje([[]],[])
-stanje.uvozi_stanje(infile)
-#q = ql.ponavljaj_q_learning(100, 20000)
-#print(q)
+sez_testov = os.listdir('testni_primeri')
+seznam_parametrov = []
+for test in sez_testov:
+	filename = 'testni_primeri\\' + test
+	stanje = ps.Stanje()
+	stanje.uvozi_stanje(filename)
+	n = stanje.n
+	m = stanje.m
+	st_trgov = 0
+	st_skladisc = 0
+	sez_blaga = list()
+	for i in range(n):
+		for j in range(m):
+			if stanje.polja[i][j].tip == 'trg':
+				st_trgov += 1
+				for blago in stanje.polja[i][j].atributi.keys:
+					if blago not in sez_blaga:
+						sez_blaga.append(blago)
+			if stanje.polja[i][j].tip == 'skladisce':
+				st_trgov += 1
+	st_blaga = len(sez_blaga)
+	
+	tm, s = test(filename, 'q_hevristika')
+	seznam_parametrov.append(",".join([test,n,m,st_trgov,st_skladisc,st_blaga,tm]))
 
-filename = "testni_primeri/test-3x3-palacinke.txt"
+
+with open("testi_rezultati.txt","w") as f_w:
+	f_w.write("\n".join(seznam_parametrov))
+
+
+
+#STARI PRIMERI:
+#filename = "testni_primeri/test-3x3-palacinke.txt"
 #filename = "testni_primeri/test-4x4-palacinkaVelikanka.txt"
 #filename = "testni_primeri/test-4x4-sadnaKupa.txt"
 # filename = "testni_primeri/test-5x7-postar.txt"
-test(filename, 'q_hevristika')
