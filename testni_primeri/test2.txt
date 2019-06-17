@@ -1,0 +1,8 @@
+Nakljucen test
+
+skladisce Aa.2,pot,pot
+garaza,pot,trg Aa.5
+pot,skladisce Aa.9,pot
+pot,trg,pot
+
+3,0,1,,0
