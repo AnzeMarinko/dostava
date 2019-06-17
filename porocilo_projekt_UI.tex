@@ -1,0 +1,87 @@
+\documentclass[a4paper,12pt]{article} %{IEEEtran}
+\usepackage[slovene]{babel}
+\usepackage[utf8]{inputenc}
+\usepackage{graphicx}
+\usepackage[T1]{fontenc}
+\usepackage{lmodern}
+\usepackage{url}
+\usepackage{cite}
+\usepackage{amsthm}
+\usepackage{amssymb}
+\usepackage{listings} %za pisanje kode
+\usepackage{float} %za natančno specificiranje pozicije slik
+
+\makeatletter
+\newcommand{\mybox}{%
+    \collectbox{%
+        \setlength{\fboxsep}{1pt}%
+        \fbox{\BOXCONTENT}%
+    }%
+}
+\makeatother
+
+\textwidth 15cm
+\textheight 24cm
+\oddsidemargin.5cm
+\evensidemargin.5cm
+\topmargin-5mm
+\addtolength{\footskip}{10pt}
+\pagestyle{plain}
+\overfullrule=15pt
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\begin{document}
+\begin{center}
+\begin{Large}
+\textbf{Razvoz blaga z roboti}\\
+\end{Large}
+\begin{large}
+Projekt pri predmetu Umetna inteligenca\\
+\vspace{3mm}
+\end{large}
+Anže Marinkok in  Ana Golob
+\end{center}
+
+\section{Uvod}
+Naloga projekta je bila uporaba algoritmov umetne inteligence za reševanje problema optimalnega razvoza različnih dobrin iz skladišč na trge. 
+
+
+
+V začetku tega poročila je podrobneje opisan obravnavani problem. Nato sledi opis heuristike algoritma A*...
+
+
+
+\section{Opis problema}
+
+
+
+Imamo šahovnico velikosti $n \times m$. Vsako polje na šahovnici ima lastnosti enega izmed spodnjih tipov:
+
+\begin{itemize}
+
+\item Pot: na tem polju se lahko nahaja robot, vendar največ en robot hkrati.
+
+\item Skladišče: vsebuje ponudbo predstavljeno s slovarjem dobrin dobrin skupaj z njihovimi količinami. Roboti se ne morejo gibati po tem polju.
+
+\item Trg: vsebuje povpraševanje predstavljeno s slovarjem dobrin skupaj z njihovimi količinami. Roboti se ne morejo gibati po tem polju.
+
+\end{itemize}
+
+Na šahovnici imamo $k$ robotov. Vsak robot ima določeno maksimalno količino dobrin, ki jih lahko nosi. Robot se lahko premika po poljih tipa pot v smereh levo, desno, gor in dol. Robot lahko prevzame različne količine blaga iz skladišča, ki se nahaja na sosednem polju. Poleg tega lahko odloži blago, ki ga nosi na trgu, ki se nahaja na sosednjem polju. Roboti se lahko premikajo sočasno.\vspace{3mm}
+
+\framebox{
+\parbox[t][1.5cm]{13cm}{
+\addvspace{0.2cm} \centering 
+
+CILJ: Poiskati čim kraše zaporedje potez (ena poteza je lahko sestavljena iz več sočasnih premikov robotov), 
+ki so potrebne, da zadostimo vsemu povpraševanju na trgih.
+}
+}\\
+\vspace{2mm}
+
+Pri tem so različne konkretne realizacije zgoraj opisanih problemov generirane naključno. Algoritem z nespremenjenimi parametri so bili preizkušeni na večih različnih tako dobljenih primerih.
+
+
+\end{document}
