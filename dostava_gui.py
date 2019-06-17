@@ -113,7 +113,7 @@ button6 = tkinter.Button(ukazi, text='Zaženi rešitev', width=25, command=lambd
 algoritem = tkinter.StringVar(ukazi)
 algoritem.set('Reinforcement learning') # default value
 lalgoritem = tkinter.Label(ukazi, text='Izberi načini reševanja:')
-option_algoritem = tkinter.OptionMenu(ukazi, algoritem, 'Brez algoritma', 'A*', 'Real time A*', 'Reinforcement learning')
+option_algoritem = tkinter.OptionMenu(ukazi, algoritem, 'Brez algoritma', 'A*', 'Reinforcement learning')
 # moznost izbire različnih primerov
 primer = tkinter.StringVar(ukazi)
 primer.set('test-3x3-palacinke.txt') # default value
