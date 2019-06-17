@@ -35,7 +35,7 @@ def osvezi():
 			p = stanje.polja[vrstica][polje]
 			# obarvaj glede na tip in pripravi text za izpis na polju
 			if p.tip in 'garaza':
-				background="Yellow"
+				background="White"
 				text = ''
 				if p.atributi:
 					text = '{} <= {}'.format(p.atributi.blago, p.atributi.prostor)
