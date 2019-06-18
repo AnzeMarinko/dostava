@@ -44,15 +44,6 @@ Projekt pri predmetu Umetna inteligenca\\
 Anže Marinko in  Ana Golob
 \end{center}
 
-\section{Uvod}
-Naloga projekta je bila uporaba algoritmov umetne inteligence za reševanje problema optimalnega razvoza različnih dobrin iz skladišč na trge. 
-
-
-
-V začetku tega poročila je podrobneje opisan obravnavani problem. Nato sledi opis heuristike algoritma A*...
-
-
-
 \section{Opis problema}
 
 
@@ -96,5 +87,22 @@ $$f(S,D) = \frac{1}{r}\sum_{i\in B}\sum_{s\in S_i}\lceil \frac{d_1(s,d^\ast(s,i)
 kjer je $d^\ast(s,i)\in D$ trgu $s$ v 1-normi najbližje skladišče ali robot z blagom $i$.
 
 Funkcija je očitno optimistična, saj je lahko kvečjemu enaka dejanskemu minimumu, saj ima morda kakšen robot manj prostora od $m$, ker morda ni mogoče priti od skladišča do trga po najkrajši poti med njima, ker morda v najbližjem skladišču ni dovolj blaga in ker se bo morda moral še vračati po isti poti nazaj oz. je všteta le pot od skladišč do trgov in ne tudi obratno. Lahko bi imeli tudi manj optimistično funkcijo, a bi postal izračun vrednosti že dosti bolj kompleksen, če bi upoštevali tudi neke posplošitve, ki jih ta model predpostavlja (vsi roboti enaki ipd.).
+
+\section{Q learning algoritem}
+
+Implementiran je tudi Q learning algoritem, vendar je v primerjavi z algoritmom A* precej počasnejši, poleg tega ne zagotavlja optimalne rešitve. Glavna težava pri doseganju optimalnih rezultatov je bila, da je funkcija nagrajevanja, ki doseže optimalne rezultate, različna za različne primere.
+
+\section{Analiza rezultatov z A* algoritmom}
+
+Algoritem je bil preizkušen na naključno definiranih testnih primerih. Med primeri so se spreminjali parametri: dimenzija šahovnice, število robotov, število trgov, število skladišč, število različnih vrst blaga in skupna količina povpraševanja po blagu. Razlikovala se je tudi razporeditev različnih polj po šahovnici, pri čemer so bili izločeni nerešljivi primeri. Analiziran je bil vpliv naštetih parametrov na spremembo časa izvajanja.
+
+Tekom testiranja se je izkazalo, da ima največji vpliv na čas izvajanja algoritma število robotov. Kar je smiselno, saj se lahko roboti premikajo sočasno in zato večje število robotov zelo močno  poveča število možnih potez v določenem stanju. Izmed preostalih parametrov je imela opatzen vpliv tudi količina blaga, ki ga je potrebno pripeljati na trge. Spodnji graf prikazuje vpliv omenjenih parametrov na čas izvajanja.
+
+\begin{figure}[H]
+\begin{center}
+\includegraphics[width=9.8cm]{cas_izvajanja.png}
+\end{center}
+\end{figure} 
+
 
 \end{document}
