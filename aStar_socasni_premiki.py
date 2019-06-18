@@ -5,6 +5,8 @@ import time
 import ql_socasni_premiki as ql
 import os
 
+maxtm = 120
+
 
 class Node:
 	def __init__(self, poteze, stanje, hevr):
@@ -41,7 +43,7 @@ def minimal(stanje):
 	for blago, value in povprasevanje.items():
 		for i, j, kolicina in value:
 			if len(ponudba.get(blago,[])) == 0:
-				break
+				return 10e30
 			pon = min([abs(x[0]-i)+abs(x[1]-j) for x in ponudba.get(blago,[])])
 			d += (kolicina // nosilnost) * pon
 			d += pon if kolicina % nosilnost > 0 else 0
@@ -81,8 +83,8 @@ def astar(stanje, hevristika, q, t):
 		trenutno = heappop(kandidati)
 		#print(trenutno.stanje)
 		#input()
-		if time.time()-t > 120:
-			return t, ['Out of Time.']
+		if time.time()-t > maxtm:
+			return time.time()-t, ['Out of Time.']
 		for poteza in trenutno.stanje.socasne_poteze():
 			auxstanje = copy.deepcopy(trenutno.stanje)
 			if type(poteza[0]) == tuple:
@@ -92,7 +94,7 @@ def astar(stanje, hevristika, q, t):
 				trenutno.stanje.izvedi_potezo(poteza)
 			#v primeru, da je to zadnja poteza
 			if trenutno.stanje.ali_je_konec():
-				return t, trenutno.poteze + [poteza]
+				return time.time()-t, trenutno.poteze + [poteza]
 			else:
 				# hevristika
 				if hevristika == 'q_hevristika':
@@ -121,37 +123,38 @@ def test(filename, hevristika):
 		print(poteza)
 	print()
 	print(time.time()-t)
-	ps.zapisi_zaporedje_potez(filename[:-4]+"resitev.txt",sol)
+	if len(sol) > 1:
+		ps.zapisi_zaporedje_potez('resitve\\' + filename[16:-4]+"resitev.txt",sol)
 	return tm, sol
 
 sez_testov = os.listdir('testni_primeri')
-seznam_parametrov = []
 for testek in sez_testov:
-	filename = 'testni_primeri/' + testek
+	filename = 'testni_primeri\\' + testek
 	stanje = ps.Stanje()
 	stanje.uvozi_stanje(filename)
+	st_robotov = len(stanje.roboti)
 	n = stanje.n
 	m = stanje.m
 	st_trgov = 0
 	st_skladisc = 0
 	sez_blaga = list()
+	skupna_kolicina = 0
 	for i in range(n):
 		for j in range(m):
 			if stanje.polja[i][j].tip == 'trg':
 				st_trgov += 1
-				for blago in stanje.polja[i][j].atributi.keys():
+					for blago, kolicina in stanje.polja[i][j].atributi.items():
+					skupna_kolicina += kolicina
 					if blago not in sez_blaga:
 						sez_blaga.append(blago)
 			if stanje.polja[i][j].tip == 'skladisce':
-				st_trgov += 1
+				st_skladisc += 1
 	st_blaga = len(sez_blaga)
 	
 	tm, s = test(filename, 'minimal')
-	seznam_parametrov.append(",".join([testek,n,m,st_trgov,st_skladisc,st_blaga,tm]))
-
-
-with open("testi_rezultati.txt","w") as f_w:
-	f_w.write("\n".join(seznam_parametrov))
+	if tm < maxtm:
+		with open("testi_rezultati.txt","a") as f_w:
+			f_w.write("{},{},{},{},{},{},{},{},{}\n".format(testek,n,m,st_robotov,st_trgov,st_skladisc,st_blaga, skupna_kolicina,tm))
 
 
 
