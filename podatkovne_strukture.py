@@ -147,7 +147,7 @@ class Stanje:
 		if self.polja[dy+y][dx+x].atributi.get(blago,0) <= 0:
 			print("Nedosegljivo blago.")
 			return None
-		# Shrani prejšno stanje in izvede nalaganje:
+		# Shrani prejsno stanje in izvede nalaganje:
 		self.roboti[irobot].nalozi(self.polja[y+dy][x+dx], blago, kolicina)
 	
 	# robot iz seznama self.roboti z indeksom irobot odlozi blago na trg dx desno in dy dol od robota
@@ -161,7 +161,7 @@ class Stanje:
 		if dx + x < 0 or dx + x >= self.m or dy + y < 0 or dy + y >= self.n or self.polja[dy+y][dx+x].tip != 'trg' or abs(dx)+abs(dy)!=1:
 			print("Nepravilen trg.")
 			return None
-		# Shrani prejšno stanje in izvede odlaganje:
+		# Shrani prejsno stanje in izvede odlaganje:
 		self.roboti[irobot].odlozi(self.polja[y+dy][x+dx])
 	
 	# uvoz stanja iz datoteke (za obliko datoteke glej spodaj)
@@ -321,7 +321,7 @@ class Stanje:
 		'''for robot in self.roboti:
 			(x,y)=robot.polozaj
 			if self.polja[y][x].tip != 'garaza':
-				#print('Robot {} ni v garaži.'.format(robot))
+				#print('Robot {} ni v garazi.'.format(robot))
 				return False'''
 		#print('KONEC!')
 		return True

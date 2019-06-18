@@ -40,6 +40,8 @@ def minimal(stanje):
 					ponudba[atr.blago[0]] = ponudba.get(atr.blago[0], []) + [(i,j)]
 	for blago, value in povprasevanje.items():
 		for i, j, kolicina in value:
+			if len(ponudba.get(blago,[])) == 0:
+				break
 			pon = min([abs(x[0]-i)+abs(x[1]-j) for x in ponudba.get(blago,[])])
 			d += (kolicina // nosilnost) * pon
 			d += pon if kolicina % nosilnost > 0 else 0
@@ -57,7 +59,7 @@ def q_hevristika(q, stanje):
 # algoritem A*
 def astar(stanje, hevristika, q, t):
 	kandidati = []
-	#začetne poteze
+	#zacetne poteze
 	for poteza in stanje.socasne_poteze():
 		auxstanje = copy.deepcopy(stanje)
 		if type(poteza[0]) == tuple:
@@ -75,7 +77,7 @@ def astar(stanje, hevristika, q, t):
 		stanje = copy.deepcopy(auxstanje)
 		
 	while kandidati:
-		# vozlišče z najmanjšo vrednostjo
+		# vozlisce z najmanjso vrednostjo
 		trenutno = heappop(kandidati)
 		#print(trenutno.stanje)
 		#input()
@@ -124,8 +126,8 @@ def test(filename, hevristika):
 
 sez_testov = os.listdir('testni_primeri')
 seznam_parametrov = []
-for test in sez_testov:
-	filename = 'testni_primeri\\' + test
+for testek in sez_testov:
+	filename = 'testni_primeri/' + testek
 	stanje = ps.Stanje()
 	stanje.uvozi_stanje(filename)
 	n = stanje.n
@@ -137,15 +139,15 @@ for test in sez_testov:
 		for j in range(m):
 			if stanje.polja[i][j].tip == 'trg':
 				st_trgov += 1
-				for blago in stanje.polja[i][j].atributi.keys:
+				for blago in stanje.polja[i][j].atributi.keys():
 					if blago not in sez_blaga:
 						sez_blaga.append(blago)
 			if stanje.polja[i][j].tip == 'skladisce':
 				st_trgov += 1
 	st_blaga = len(sez_blaga)
 	
-	tm, s = test(filename, 'q_hevristika')
-	seznam_parametrov.append(",".join([test,n,m,st_trgov,st_skladisc,st_blaga,tm]))
+	tm, s = test(filename, 'minimal')
+	seznam_parametrov.append(",".join([testek,n,m,st_trgov,st_skladisc,st_blaga,tm]))
 
 
 with open("testi_rezultati.txt","w") as f_w:

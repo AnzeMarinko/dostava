@@ -4,7 +4,7 @@ import itertools
 from random import choices
 from copy import deepcopy
 
-# Generira funkcijo, ki določa igralno strategijo:
+# Generira funkcijo, ki doloca igralno strategijo:
 def strategija(q, e): 
     def izberi_akcijo(state): 
         
@@ -32,7 +32,7 @@ def ali_je_v_q(stanje, q):
     else:
         return False
 
-# Če stanja še ni v q ga doda, vsem akcijam iz stanja pripiše verjetnosti 0
+# ce stanja se ni v q ga doda, vsem akcijam iz stanja pripise verjetnosti 0
 def dodaj_stanje_v_q(q, stanje, sez_potez):
     shrani_stanje = stanje.pretvori_v_niz()
     if shrani_stanje not in q.keys():
@@ -67,7 +67,7 @@ def razdaljija_do_trga(stanje, prejsno_stanje, poteza):
     else:
         return -0.1
 
-# Ovrednoti razdalijo do skladišča:
+# Ovrednoti razdalijo do skladisca:
 def razdaljija_do_skladisca(stanje, prejsno_stanje, poteza):
     robot = prejsno_stanje.roboti[poteza[1]]
     x = robot.polozaj[0] + poteza[2]
@@ -92,7 +92,7 @@ def razdaljija_do_skladisca(stanje, prejsno_stanje, poteza):
     else:
         return -0.1
 
-# Izračuna nagrado:
+# Izracuna nagrado:
 def poisci_nagrado(stanje, prejsno_stanje, poteza):
     if stanje.ali_je_konec() == True:
         return 100
@@ -137,7 +137,7 @@ def q_learning(zacetno_stanje, st_poiskusov,q=dict(), diskontiraj = 0.06,
     sez_potez = zacetno_stanje.socasne_poteze()
 
     # q je tipa slovar slovarjev: stanje -> akcija -> verjetnost
-    # q privzeto vrača vrednosti 0
+    # q privzeto vraca vrednosti 0
     q = dodaj_stanje_v_q(q, zacetno_stanje, sez_potez)
 
     policy = strategija(q, e)
@@ -145,7 +145,7 @@ def q_learning(zacetno_stanje, st_poiskusov,q=dict(), diskontiraj = 0.06,
 
     for iti_poiskus in range(st_poiskusov): 
         #print('st. piskuasa: ', iti_poiskus)
-        # Shrani začetno stanje: 
+        # Shrani zacetno stanje: 
         stanje = zacetno_stanje 
         #print(stanje)
                
@@ -154,7 +154,7 @@ def q_learning(zacetno_stanje, st_poiskusov,q=dict(), diskontiraj = 0.06,
         socasne_pot = stanje.socasne_poteze()
         #print(socasne_pot)
         #print(sez_akcij, verjetnosti_akcij)
-        # Izbere akcijo glede na uteži (podane verjetnosti):
+        # Izbere akcijo glede na utezi (podane verjetnosti):
         poteza = choices(sez_akcij, weights = verjetnosti_akcij, k=1)
         poteza = poteza[0]
         #if poteza[0] == 'nalaganje':
@@ -172,7 +172,7 @@ def q_learning(zacetno_stanje, st_poiskusov,q=dict(), diskontiraj = 0.06,
             stanje.izvedi_potezo(poteza)
             nagrada = poisci_nagrado(stanje, prejsno_stanje, poteza)
         #print(nagrada)
-        # Če novega stanja še ni v q ga doda, vsem akcijam iz stanja pripiše verjetnosti 0
+        # ce novega stanja se ni v q ga doda, vsem akcijam iz stanja pripise verjetnosti 0
         sez_potez = stanje.socasne_poteze()
         q = dodaj_stanje_v_q(q, stanje, sez_potez)
 
@@ -227,7 +227,7 @@ def poisci_pot(q, stanje):
             break
         i += 1
     ps.zapisi_zaporedje_potez('resitve/q_l_test-3x3-palacinke.txt', sez_potez)
-    print('Rešitev shranjena')
+    print('Resitev shranjena')
 
 
 # naslov datoteke z zapisanom zacetnim stanjem

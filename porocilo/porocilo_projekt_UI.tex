@@ -1,5 +1,5 @@
 \documentclass[a4paper,12pt]{article} %{IEEEtran}
-\usepackage[slovene]{babel}
+%\usepackage[slovene]{babel}
 \usepackage[utf8]{inputenc}
 \usepackage{graphicx}
 \usepackage[T1]{fontenc}
@@ -41,7 +41,7 @@
 Projekt pri predmetu Umetna inteligenca\\
 \vspace{3mm}
 \end{large}
-Anže Marinkok in  Ana Golob
+Anže Marinko in  Ana Golob
 \end{center}
 
 \section{Uvod}
@@ -83,5 +83,18 @@ ki so potrebne, da zadostimo vsemu povpraševanju na trgih.
 
 Pri tem so različne konkretne realizacije zgoraj opisanih problemov generirane naključno. Algoritem z nespremenjenimi parametri so bili preizkušeni na večih različnih tako dobljenih primerih.
 
+\section{Hevristika A*}
+
+Želimo optimistično hevristično funkcijo, da bi si zagotovili najkrajšo rešitev, hkrati, pa se želimo čim bolje približati točnemu najmanjšemu številu preostalih potez do konca.
+
+Naj bosta $D = \lbrace D_i; \forall i\in B\rbrace$ slovar ponudb in $S = \lbrace S_i; \forall i\in B\rbrace$ slovar povpraševanja,
+kjer $D_i$ seznam skladišč in robotov ter $S_i$ seznam trgov s  ponudbo ali povpraševanjem po blagu $i$ in je $B$ množica vrst blaga. Naj bo $m$ največja nosilnost enega robota, $r$ število robotov, $d_1(s,d) = |s_x-d_x|+|s_y-d_y|$ razdalja med skladiščem $d$ in trgom $s$ ter $s_q$ potrebna količina določenega blaga na trgu $s$.
+
+Hevristično funkcijo definiramo kot
+
+$$f(S,D) = \frac{1}{r}\sum_{i\in B}\sum_{s\in S_i}\lceil \frac{d_1(s,d^\ast(s,i))}{m} s_q\rceil,$$
+kjer je $d^\ast(s,i)\in D$ trgu $s$ v 1-normi najbližje skladišče ali robot z blagom $i$.
+
+Funkcija je očitno optimistična, saj je lahko kvečjemu enaka dejanskemu minimumu, saj ima morda kakšen robot manj prostora od $m$, ker morda ni mogoče priti od skladišča do trga po najkrajši poti med njima, ker morda v najbližjem skladišču ni dovolj blaga in ker se bo morda moral še vračati po isti poti nazaj oz. je všteta le pot od skladišč do trgov in ne tudi obratno. Lahko bi imeli tudi manj optimistično funkcijo, a bi postal izračun vrednosti že dosti bolj kompleksen, če bi upoštevali tudi neke posplošitve, ki jih ta model predpostavlja (vsi roboti enaki ipd.).
 
 \end{document}
